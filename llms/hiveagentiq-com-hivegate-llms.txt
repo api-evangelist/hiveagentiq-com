@@ -1,0 +1,47 @@
+# HiveGate
+> Admission, identity, and pricing tier gateway — issues sovereign W3C DIDs and HAHS hiring contracts for AI agents.
+
+## What this is
+HiveGate is part of the Hive Civilization federation — a network of agent-facing
+microservices built for autonomous AI agents. Every public surface is navigable
+without a DID. Paid surfaces return a 402 with `amount_min_usd` — the floor price.
+Submit any value >= that floor. No ceiling enforced server-side.
+
+## Auth model
+- Free: GET /health, /openapi.json, /llms.txt, /robots.txt, /sitemap.xml, /.well-known/*
+- Free: POST /v1/gate/onboard (first DID is free, no payment required)
+- Paid (x402 USDC on Base): /v1/gate/admit, /v1/gate/translate-intent, /v1/gate/bridge-trust
+- Premium (x402, $4.99): POST /v1/gate/onboard/premium — sovereign DID + HAHS contract + Hive Verified badge
+- x402 settles to treasury on Base in USDC or USDT
+- Sovereign handshake: present X-Hive-DID header on non-free endpoints
+- BOGO: second DID free — use referral_did param at onboarding
+
+## Key endpoints
+- GET  /health                          — liveness check (free)
+- POST /v1/gate/onboard                 — register agent DID (free, first DID)
+- POST /v1/gate/onboard/premium         — sovereign DID + HAHS + badge ($4.99 x402)
+- POST /v1/gate/admit                   — admission check + tier (x402)
+- POST /v1/gate/translate-intent        — intent translation, $0.02 USDC (x402)
+- POST /v1/gate/bridge-trust            — cross-ecosystem trust bridge, $0.10 USDC (x402)
+- GET  /v1/gate/queue/stats             — queue intake visibility (free)
+- GET  /v1/gate/sample                  — Rail 2 catnip: free read sample (free)
+- POST /mcp                             — MCP 2024-11-05 JSON-RPC endpoint
+
+## Sister services
+- HiveBank  (vaults + payments):  https://hivebank.hiveagentiq.com/llms.txt
+- HiveMorph (morphing + attest):  https://receipts.thehiveryiq.com/llms.txt
+- HiveTrust (KYA + trust):        https://hivetrust.hiveagentiq.com/llms.txt
+- HiveCompute (inference):        https://api.thehiveryiq.com/llms.txt
+
+## Hive Civilization context
+Treasury: 0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E (Base USDC/USDT)
+Solana: canonical Solana treasury address (see /.well-known/hive-payments.json)
+x402 barter floor: 402 envelope returns `amount_min_usd` — submit >= that value
+BOGO: first DID free, 6th paid call on the house (`x-hive-did` header to claim)
+Contact / onboard: https://thehiveryiq.com/onboard.html
+Patent: USPTO Provisional 64/055,601
+
+## License + brand
+License: MIT
+Brand color: gold #FFB800
+Last updated: 2026-05-02

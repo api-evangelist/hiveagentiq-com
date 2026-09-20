@@ -1,0 +1,163 @@
+generated: '2026-09-19'
+method: searched
+source: https://hivetrust.hiveagentiq.com/.well-known/did-configuration.json
+derived_from:
+- openapi/hiveagentiq-com-hivetrust-openapi.json
+- openapi/hiveagentiq-com-hivegate-openapi.json
+- openapi/hiveagentiq-com-hivebank-openapi.json
+- openapi/hiveagentiq-com-hivelaw-openapi.json
+- a2a/hiveagentiq-com-agent-card.json
+- mcp/hiveagentiq-com-hivetrust-mcp-tools.json
+docs:
+- https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+- https://hivetrust.hiveagentiq.com/.well-known/cte-test-vectors.json
+- https://github.com/srotzin/hivetrust#ctef-v031-endpoint
+summary: >-
+  Hive Agent IQ's conformance profile is the decentralized-identity and agent-commerce protocol stack, not an
+  enterprise or sector standard: W3C DID Core (did:key, plus a proprietary did:hive method), W3C Verifiable Credentials
+  Data Model 2.0 with Ed25519Signature2020, a DIF Well Known DID Configuration document served at the RFC 8615 path,
+  A2A 0.3.0 agent cards on four hosts (one of them backed by a live JSON-RPC responder), MCP 2024-11-05 on three hosts,
+  x402 v1 payment challenges (a real PaymentRequirements payload was observed on HiveBank) and an MPP/Tempo rail
+  declared in every contract, plus the CTEF v0.3.1 trust-evidence fixture. It declares no OAuth 2.0, no OIDC, no
+  RFC 9728, no RFC 9457, no RFC 9116 security.txt and no RFC 9727 API catalog on any host. Regulatory names in the
+  responses (HIPAA, SOC 2, GDPR, EU AI Act, NIST AI RMF) are self-descriptions with no certificate or report behind
+  them and are recorded as claimed, not verified.
+standards:
+- id: did-configuration
+  name: DIF Well Known DID Configuration (domain linkage)
+  version: v0.0.1 (as stated in the document)
+  conforms: true
+  domain_standard_signature: true
+  evidence: >-
+    GET https://hivetrust.hiveagentiq.com/.well-known/did-configuration.json -> 200 application/json with @context
+    https://identity.foundation/.well-known/did-configuration/v1, linked_dids[0].type ["VerifiableCredential",
+    "DomainLinkageCredential"], issuer did:key:z6MkrkfpCsS21cKrktK7HXy6zyKruDciNLkE58BdfVXVotVH, credentialSubject.origin
+    https://hivetrust.hiveagentiq.com, proof.type Ed25519Signature2020. Saved verbatim to
+    well-known/hiveagentiq-com-hivetrust-did-configuration.json.
+  caveat: >-
+    proof.proofValue is the literal string "domain-linkage-proof-placeholder" and validFrom is stamped with the request
+    time, so the document has the standard's SHAPE but its linkage credential cannot be cryptographically verified. The
+    signature is recorded because the contract declares the standard at the standard's own path; the placeholder proof
+    is recorded so nobody credits a verified linkage.
+- id: w3c-did-core
+  name: W3C Decentralized Identifiers (DID) v1.0
+  conforms: true
+  evidence: 'did:key issuer in did-configuration.json; agent cards standards.w3c_did_core true and did_method "did:key"; hivetrust.json compliance ["W3C-DID", …]; hivetrust_register_agent returns a DID; a proprietary did:hive:* method is used for service issuers (X-Hive-Prov-Iss: did:hive:hivetrust) and for agents (Bearer did:hive:*).'
+- id: w3c-vc-data-model-2.0
+  name: W3C Verifiable Credentials Data Model 2.0
+  conforms: true
+  evidence: '@context https://www.w3.org/ns/credentials/v2 in the domain-linkage credential; agent cards vcdm_version "2.0"; card capability_vcs.credential_type "HiveCapabilityCredential"; POST /v1/trust/vc/issue ("Per Verifiable Credential issued (VCDM 2.0)").'
+- id: ed25519-signature-2020
+  name: Ed25519Signature2020 data-integrity cryptosuite
+  conforms: true
+  verification: partial
+  evidence: 'proof.type Ed25519Signature2020 in did-configuration.json; agent card cryptosuite "Ed25519Signature2020"; per-response Ed25519 provenance headers with a published key at /v1/prov/pubkey. The domain-linkage proofValue is a placeholder, so only the response-header signatures were observed as real signatures.'
+- id: a2a
+  name: Agent2Agent protocol
+  version: '0.3.0'
+  conforms: true
+  evidence: >-
+    Four agent cards declaring protocolVersion 0.3.0 at /.well-known/agent-card.json on hivetrust, hivegate, hivebank
+    and hivelaw .hiveagentiq.com (each graded near-conformant in a2a/hiveagentiq-com-a2a.yml — capabilities object,
+    skills array, protocolVersion present, no preferredTransport). POST https://hivegate.hiveagentiq.com/ tasks/get
+    returned {"jsonrpc":"2.0","id":1,"error":{"code":-32001,"message":"Task apievangelist-nonexistent-probe not found"}}
+    — the A2A-defined TaskNotFoundError — so the HiveGate card's url is a live A2A responder. The HiveTrust card's url
+    answers the catch-all 200 body to JSON-RPC; the HiveBank card's url answers an x402 402.
+- id: mcp
+  name: Model Context Protocol
+  version: '2024-11-05'
+  conforms: true
+  evidence: 'initialize on hivetrust, hivegate and hivebank /mcp returned protocolVersion "2024-11-05" with serverInfo {hivetrust 1.0.0}, {hive-civilization 1.0.0}, {hivebank 1.0.0}; anonymous tools/list returned 17, 4 and 5 tools with inputSchema and annotations (readOnlyHint/destructiveHint/idempotentHint). resources/list and prompts/list return -32601. HiveLaw exposes its 4 tools over REST (GET /v1/mcp/tools) rather than JSON-RPC.'
+- id: json-rpc-2.0
+  conforms: true
+  evidence: 'MCP and A2A responses carry "jsonrpc":"2.0" with standard -32601 / -32001 error objects.'
+- id: x402
+  name: x402 HTTP payment protocol
+  version: '1 (x402Version)'
+  conforms: true
+  verification: observed
+  evidence: >-
+    POST https://hivebank.hiveagentiq.com/ (no payment) -> HTTP 200 body {"code":"PAYMENT_REQUIRED","protocol":"x402",
+    "x402Version":1,"accepts":[{"scheme":"exact","network":"base","maxAmountRequired":"10000","resource":…,"payTo":
+    "0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E","maxTimeoutSeconds":300,"asset":"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "extra":{"name":"USD Coin","version":"2","assetTransferMethod":"eip3009"}}]} — a real x402 v1 PaymentRequirements
+    object (the asset is the canonical Base USDC contract). HiveGate answers HTTP 402 with a proprietary HIVE_402 envelope
+    carrying an x402 block and payment_methods; every OpenAPI declares 402 and rails ["x402","mpp"]; HiveGate
+    hive-payments.json names the X-Payment header.
+  note: 'HiveBank returned the requirements with HTTP 200 rather than 402; HiveGate returns 402 with a non-standard body. Neither host was paid.'
+- id: eip-3009
+  name: EIP-3009 transferWithAuthorization (gasless USDC)
+  conforms: true
+  evidence: 'assetTransferMethod "eip3009" in the observed x402 requirements; agent card pillars.settable "EIP-3009 gasless".'
+- id: mpp
+  name: MPP payment rail (Tempo)
+  conforms: true
+  verification: declared
+  evidence: 'All four OpenAPIs carry a root x-mpp extension {realm, payment:{method:"tempo",currency:"0x20c0…b50",decimals:6,recipient}, rails:["x402","mpp"]} and per-operation x-mpp-charge. No MPP challenge was observed live.'
+- id: ctef
+  name: Composable Trust Evidence Format v0.3.1 (A2A community consortium)
+  version: 0.3.1
+  conforms: true
+  verification: fixture-served
+  evidence: 'GET https://hivetrust.hiveagentiq.com/.well-known/cte-test-vectors.json -> 200, {"version":"0.3.1","spec":"CTEF (Composable Trust Evidence Format)","provider":"did:web:hivetrust.hiveagentiq.com","consortium_seat":{"rank":5,"members":["AgentGraph","AgentID","APS","Nobulex","HiveTrust"],"freeze_commit":"https://github.com/a2aproject/A2A/discussions/1734",…}} (12,476 bytes, saved verbatim). The README''s /verify and /verify/self-test routes answered the catch-all 200 body, so the byte-match verifier itself was not observed.'
+- id: rfc8785-jcs
+  name: RFC 8785 JSON Canonicalization Scheme
+  conforms: true
+  verification: claimed
+  evidence: 'hivetrust README: "All vectors use RFC 8785 JCS — implemented inline in src/routes/cte.js"; agent card pillars.provable "Canonical-JSON Ed25519 signatures".'
+- id: openai-plugin-manifest
+  name: ai-plugin.json (OpenAI plugin manifest schema v1)
+  conforms: true
+  evidence: '/.well-known/ai-plugin.json served on hivetrust, hivegate, hivebank and hivelaw with schema_version "v1", name_for_model, api.type "openapi" pointing at each host''s /openapi.json, auth.type "none".'
+- id: openapi-3.0
+  version: 3.0.3
+  conforms: true
+  evidence: 'Four documents parse (hivetrust 8 operations, hivegate 5, hivebank 5, hivelaw 6; 24 operations, 24 paths).'
+  gaps:
+  - No operationIds, no tags, no components, no securitySchemes, no requestBody schemas, no response schemas — each operation is summary + description + x-mpp-charge + 200/402.
+  - HiveBank and HiveLaw servers[] name the Render origin (*.onrender.com) rather than the first-party hiveagentiq.com host.
+  - 'The served specs cover a fraction of the routes the discovery documents and READMEs name (HiveTrust: 8 of ~60; HiveGate: 5 of ~25; HiveLaw: 6 of ~36).'
+- id: hahs
+  name: Hive Agent Hiring Standard (HAHS 1.0.0) — proprietary
+  conforms: true
+  evidence: 'agents.txt contracts=HAHS 1.0.0; cards agent_hiring_standard "HAHS-1.0.0"; GET /v1/law/hahs/schema (hivelaw.json). Provider-defined, not an external standard.'
+- id: llms-txt
+  conforms: true
+  evidence: '/llms.txt served on hivetrust (720 B), hivegate (2,599 B) and hivebank (2,744 B); 404 on hivelaw.'
+- id: sitemaps-robots
+  conforms: true
+  evidence: 'robots.txt (Allow: /) and sitemap.xml on hivetrust and hivegate; robots.txt on hivebank and hivelaw.'
+- id: oauth2
+  conforms: false
+  evidence: 'No oauth2 securityScheme in any contract; /.well-known/oauth-authorization-server returns a catch-all body (hivetrust, hivebank) or 404 (hivegate, hivelaw).'
+- id: oidc
+  conforms: false
+  evidence: '/.well-known/openid-configuration: catch-all body or 404 on every host.'
+- id: rfc9728-protected-resource
+  conforms: false
+  evidence: '/.well-known/oauth-protected-resource on the three MCP hosts: hivetrust catch-all 200 (not metadata), hivegate 404, hivebank catch-all hint.'
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: 'Proprietary error envelopes in application/json; see errors/hiveagentiq-com-problem-types.yml.'
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: '/.well-known/security.txt: hivetrust catch-all JSON, hivegate 404, hivebank catch-all hint, hivelaw 404, apex 403 (Cloudflare Error 1000). The operator''s real security.txt is on thehiveryiq.com (sibling profile).'
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: '/.well-known/api-catalog: catch-all or 404 on every host.'
+- id: rfc8594-sunset
+  conforms: false
+  evidence: No Sunset or Deprecation headers observed; no policy published.
+- id: soap-wsdl
+  conforms: false
+  evidence: No SOAP surface named anywhere; ?wsdl probes are meaningless on hosts that answer 200 or 402 for every path.
+compliance_claims:
+  note: >-
+    Self-descriptions only. No certificate, audit report, trust center or attestation page exists on any hiveagentiq.com
+    host (the apex 403s), so no Compliance pointer is emitted.
+  claimed:
+  - {claim: 'HIPAA, SOC2, GDPR', where: '401 envelope platform.compliance on hivetrust and hivebank'}
+  - {claim: 'W3C-DID, W3C-VC, EU-AI-Act, NIST-AI-RMF, IETF-A-JWT', where: 'hivetrust.json compliance[]'}
+  - {claim: 'EU AI Act Article 12 (logging) + Article 13 (transparency) ready', where: 'HiveTrust agent card pillars.defensible'}
+  - {claim: 'GENIUS Act, CLARITY Act, EU AI Act Art. 12, SR 11-7', where: 'HiveGate 402 envelope network.compliance'}
+  - {claim: 'USPTO Provisional 64/055,601; applications 64/049,200-226', where: 'llms.txt, cte-test-vectors.json'}

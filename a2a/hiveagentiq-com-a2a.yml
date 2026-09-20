@@ -1,0 +1,198 @@
+generated: '2026-09-19'
+method: probed
+source: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
+card:
+  file: a2a/hiveagentiq-com-agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: hivetrust.hiveagentiq.com
+  note: >-
+    Served from the HiveTrust service host, a first-party subdomain of the company's registrable domain that CNAMEs to
+    hivetrust.onrender.com; the Render origin serves the byte-identical document (sha256 6f23edfe…, 7,803 bytes) at both
+    /.well-known/agent-card.json and the legacy /.well-known/agent.json, and that Render URL is the one the
+    a2aregistry.org listing (author "Hive Agent IQ", agent "HiveTrust", fetched 2026-09-19) pointed at, which is how the
+    company entered the harvest. Four fetches across the two hostnames over ten minutes returned the same hash. CAVEAT
+    ON THE PROBE: this host answers HTTP 200 with a JSON "not a real endpoint" body for EVERY unknown path (the
+    negative-control /.well-known/apievangelist-negative-control-7f3a9c.json also 200s), so status alone proves nothing
+    here; the card is accepted because its body is a 7.8 KB AgentCard-shaped object with name, url, version,
+    protocolVersion, capabilities, skills and provider, which the catch-all body is not. Ownership: provider.organization
+    is "Hive Agent IQ" with provider.url https://www.hiveagentiq.com; the card's url is https://hivetrust.hiveagentiq.com;
+    the hivetrust README is "MIT © 2026 HiveAgent IQ" and lists this card URL; the sibling brand Hive Civilization
+    (thehiveryiq.com, same operator — the OpenAPI contact is steve@thehiveryiq.com and the SDK author is Steve Rotzin)
+    is profiled separately in all/thehiveryiq-com. The apex website hiveagentiq.com itself returned Cloudflare Error 1000
+    (HTTP 403, "DNS points to prohibited IP") for every path during the pass, so the card's provider.url is dead.
+x-evidence:
+  fetched: '2026-09-19'
+  url: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json; charset=utf-8
+  body_bytes: 7803
+  sha256_prefix: 6f23edfe9569
+  etag: W/"1e7b-7MyvolgBRtbqVbK7YKUIckC5bpI"
+  body_parses_as: JSON object with AgentCard shape (protocolVersion, name, description, url, version, provider, capabilities, defaultInputModes, defaultOutputModes, skills, authentication, payment) plus vendor fields (pillars, genesis_program, citizen_mode, capability_vcs, bogo, standards, zk_infrastructure, extensions)
+  corroborating_probes:
+  - {url: 'https://hivetrust.hiveagentiq.com/.well-known/agent.json', http_status: 200, note: 'Legacy path; byte-identical.'}
+  - {url: 'https://hivetrust.onrender.com/.well-known/agent.json', http_status: 200, note: 'The a2aregistry.org URL; byte-identical.'}
+  - {url: 'https://hivetrust.onrender.com/.well-known/agent-card.json', http_status: 200, note: byte-identical.}
+  - {url: 'https://hivetrust.hiveagentiq.com/.well-known/apievangelist-negative-control-7f3a9c.json', http_status: 200, note: 'Negative control ALSO 200s with the catch-all body — the host does not distinguish served documents by status.'}
+  - url: https://hivetrust.hiveagentiq.com/
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tasks/get","params":{"id":"apievangelist-nonexistent-probe"}}'
+    http_status: 200
+    response: '{"service":"hivetrust","message":"No closed doors — but this path is not a real endpoint. Follow the breadcrumbs.","requested":"/", …}'
+    note: 'The card''s declared url is NOT an A2A JSON-RPC responder: a JSON-RPC POST to / and to /a2a both get the catch-all body, with no jsonrpc error object. An A2A client following this card has nowhere to send message/send. The host''s live agent surface is MCP at /mcp (17 tools), not A2A.'
+  - {url: 'https://hiveagentiq.com/.well-known/agent-card.json', http_status: 403, note: 'Registrable domain: Cloudflare Error 1000 HTML for every path.'}
+  - {url: 'https://a2aregistry.org', note: 'Listed as one of 415 agents (author "Hive Agent IQ", agent HiveTrust, card URL https://hivetrust.onrender.com/.well-known/agent.json). The registry was the lead; the card above was fetched from the provider''s first-party host.'}
+agent_card:
+  name: HiveTrust
+  description: 'Hive Civilization is the cryptographic backbone of autonomous agent commerce … HiveTrust is the identity + trust + audit substrate: KYA identity verification, behavioral trust scoring, performance bonds, delegation trees, ZK-attested receipts (SpectralZK), and insurance for autonomous AI agents.'
+  url: https://hivetrust.hiveagentiq.com
+  version: 1.0.0
+  protocol_version: '0.3.0'
+  preferred_transport: null
+  provider: {organization: Hive Agent IQ, url: 'https://www.hiveagentiq.com'}
+  capabilities: {streaming: false, pushNotifications: false, stateTransitionHistory: false}
+  default_input_modes: [application/json]
+  default_output_modes: [application/json]
+  security_schemes: null
+  security: null
+  documentation_url: null
+  icon_url: null
+  skill_count: 5
+  skills:
+  - {id: identity-verification, name: Identity Verification, tags: [identity, did, kya, verification]}
+  - {id: trust-scoring, name: Trust Scoring, tags: [trust, reputation, scoring]}
+  - {id: bond-management, name: Performance Bonds, tags: [bonds, staking, usdc, defi]}
+  - {id: data-oracle, name: Data Oracle, tags: [data, oracle, context, leases]}
+  - {id: delegation, name: ZK-Spend Delegation, tags: [delegation, spending, budget, zk]}
+  vendor_fields:
+    authentication: '{"schemes":["x402","api-key"],"credentials_url":"https://hivegate.hiveagentiq.com/v1/gate/onboard"}'
+    payment: 'x402, USDC on base, address 0x1518…436E, secondary rails USDT/base and USDC/solana, fee_schedule of 8 priced endpoints, BOGO first call free / every 6th free'
+    standards: 'w3c_did_core, vcdm_version 2.0, did_method did:key, cheqd_compatible, hahs_compliant, hagf_governed, did_configuration /.well-known/did-configuration.json'
+    genesis_program: '1000 genesis slots, founder/citizen/tourist tiers, claim via POST https://hivegate.hiveagentiq.com/v1/gate/onboard'
+    zk_infrastructure: 'Aleo hive_trust.aleo prove_activity + HMAC-SHA256 attestations; four GET endpoints for threshold proofs'
+    extensions: 'hive_pricing; asqav 0.1-draft derivation_rights (compatible_schema https://api.asqav.com/.well-known/agent.json)'
+conformance:
+  spec: A2A 1.0.0
+  grade: near-conformant
+  protocol_version: '0.3.0'
+  preferred_transport: null
+  hard_checks:
+    capabilities_is_object: true
+    protocol_version_present: true
+    skills_is_array: true
+  optional_fields:
+    default_input_modes: true
+    default_output_modes: true
+    preferred_transport: false
+  grade_basis: >-
+    All three hard checks pass: capabilities is an OBJECT (streaming, pushNotifications, stateTransitionHistory, all
+    false), protocolVersion is present ("0.3.0") and skills is an ARRAY of five populated skills (id, name, description,
+    tags, inputModes, outputModes, examples). preferredTransport is absent, so a 0.3.0 reader cannot tell whether the
+    declared url speaks JSONRPC, GRPC or HTTP+JSON — and in practice it speaks none (see corroborating_probes). That
+    missing optional discriminator places the card at near-conformant rather than conformant.
+  deviations:
+  - field: preferredTransport
+    observed: absent
+    note: Required-by-convention in 0.3.0 for a card with a top-level url; no additionalInterfaces either.
+  - field: url
+    observed: https://hivetrust.hiveagentiq.com (root)
+    note: 'Not an A2A endpoint: JSON-RPC POSTs to / and /a2a receive the host''s catch-all "not a real endpoint" 200 body.'
+  - field: securitySchemes / security
+    observed: 'absent; a vendor "authentication": {"schemes": ["x402","api-key"]} object instead'
+    note: The A2A field for declaring auth is not used, so a conformant client sees no auth requirement while the provider gates every write on a DID and payment.
+  - field: skills[].examples
+    observed: empty arrays on all five skills
+  - field: top-level vendor fields
+    observed: pillars, genesis_program, citizen_mode, capability_vcs, authentication, payment, bogo, standards, cheqd_compatible, vcdm_version, did_method, cryptosuite, trust_registry, did_configuration, zk_infrastructure, extensions
+    note: 'Roughly 70% of the document''s bytes are outside the AgentCard schema; the "extensions" object is not the A2A capabilities.extensions[] shape.'
+  - field: documentationUrl / iconUrl / signatures
+    observed: absent
+additional_cards:
+- file: a2a/hiveagentiq-com-hivegate-agent-card.json
+  source: https://hivegate.hiveagentiq.com/.well-known/agent-card.json
+  host: hivegate.hiveagentiq.com
+  path: /.well-known/agent-card.json
+  canonical: true
+  http_status: 200
+  content_type: application/json
+  body_bytes: 1946
+  name: HiveGate
+  url: https://hivegate.hiveagentiq.com
+  version: 1.0.0
+  protocol_version: '0.3.0'
+  provider: {organization: Hive Agent IQ, url: 'https://www.hiveagentiq.com'}
+  skills: [agent-onboarding, framework-bridge, trust-bridging]
+  grade: near-conformant
+  hard_checks: {capabilities_is_object: true, protocol_version_present: true, skills_is_array: true}
+  deviations: [no-preferredTransport, vendor-authentication-object-instead-of-securitySchemes, empty-skill-examples]
+  responder:
+    url: https://hivegate.hiveagentiq.com/
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tasks/get","params":{"id":"apievangelist-nonexistent-probe"}}'
+    http_status: 200
+    response: '{"jsonrpc":"2.0","id":1,"error":{"code":-32001,"message":"Task apievangelist-nonexistent-probe not found"}}'
+    note: 'A REAL A2A JSON-RPC responder at the card''s declared url: -32001 is the A2A-defined TaskNotFoundError. This is the only one of the four cards whose url answers A2A. POST /a2a on the same host returns the HIVE_402 payment envelope instead. Nothing was sent and nothing was purchased. Negative control on this host is a real 404, so its 200s are served documents.'
+  legacy_path:
+    file: a2a/hiveagentiq-com-hivegate-legacy-agent.json
+    source: https://hivegate.hiveagentiq.com/.well-known/agent.json
+    http_status: 200
+    body_bytes: 733
+    grade: flavored
+    note: 'A DIFFERENT document from the canonical card: {"name":"hivegate","description":…,"url":…,"contact":…,"did":"did:hive:hivegate","capabilities":["mcp","x402-payments","usdc","agent-to-agent"],"paywall":{…},"onboard":…,"llms_txt":…,"openapi":…,"health":…,"brand":{…}} — capabilities is an ARRAY, no protocolVersion, no skills. Recorded as flavored; the canonical path carries the real card.'
+- file: a2a/hiveagentiq-com-hivebank-agent-card.json
+  source: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
+  host: hivebank.hiveagentiq.com
+  path: /.well-known/agent-card.json
+  canonical: true
+  http_status: 200
+  content_type: application/json
+  body_bytes: 6097
+  name: HiveBank
+  url: https://hivebank.onrender.com
+  version: 1.0.0
+  protocol_version: '0.3.0'
+  provider: {organization: Hive Agent IQ, url: 'https://www.hiveagentiq.com'}
+  skills: [vault, streaming-payment, budget-management, perf-credit, hivebond, ritz-cashback]
+  grade: near-conformant
+  hard_checks: {capabilities_is_object: true, protocol_version_present: true, skills_is_array: true}
+  deviations: [no-preferredTransport, url-names-render-origin-not-first-party-host, vendor-authentication-object, empty-skill-examples]
+  responder:
+    url: https://hivebank.hiveagentiq.com/
+    method: POST
+    http_status: 200
+    response: '{"success":false,"error":"Payment required","code":"PAYMENT_REQUIRED","protocol":"x402","x402Version":1,"accepts":[{"scheme":"exact","network":"base","maxAmountRequired":"10000","resource":"https://hivebank.hiveagentiq.com/","description":"HiveBank API call ($0.01)","payTo":"0x1518…436E","maxTimeoutSeconds":300,"asset":"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913","extra":{"name":"USD Coin","version":"2","assetTransferMethod":"eip3009"}}]}'
+    note: 'A JSON-RPC POST to the card url is met with an x402 v1 PaymentRequirements payload (HTTP 200), not an A2A error object — the host meters every POST at $0.01 before looking at the method. Whether an A2A responder sits behind the paywall was not tested; nothing was paid. Negative control on this host is a catch-all 200 hint body, but the card body is a 6 KB AgentCard object, not the hint.'
+  legacy_path: {source: 'https://hivebank.hiveagentiq.com/.well-known/agent.json', http_status: 200, note: byte-identical to the canonical card}
+- file: a2a/hiveagentiq-com-hivelaw-agent-card.json
+  source: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
+  host: hivelaw.hiveagentiq.com
+  path: /.well-known/agent-card.json
+  canonical: true
+  http_status: 200
+  content_type: application/json
+  body_bytes: 4902
+  name: HiveLaw
+  url: https://hivelaw.onrender.com
+  version: 1.0.0
+  protocol_version: '0.3.0'
+  provider: {organization: Hive Agent IQ, url: 'https://www.hiveagentiq.com'}
+  skills: [compliance-cert, hallucination-audit, dispute-resolution]
+  grade: near-conformant
+  hard_checks: {capabilities_is_object: true, protocol_version_present: true, skills_is_array: true}
+  deviations: [no-preferredTransport, url-names-render-origin-not-first-party-host, vendor-authentication-object, empty-skill-examples]
+  responder: {note: 'Not probed. Negative control on this host is a real 404 (the endpoint-catalogue envelope), so the card is a served document.'}
+  legacy_path: {source: 'https://hivelaw.hiveagentiq.com/.well-known/agent.json', http_status: 200, note: byte-identical to the canonical card}
+- source: https://hiveforge.hiveagentiq.com/.well-known/agent-card.json
+  host: hiveforge.hiveagentiq.com
+  http_status: 403
+  note: 'Named by robots.txt and hive-services.json as the DID-minting service; Cloudflare Error 1000 for every path. No card recorded.'
+surface_relationship:
+  note: >-
+    Hive Agent IQ publishes three agent surfaces per service and they are projections of route sets that no single
+    document fully describes. A2A: four 0.3.0 cards (17 skills in total) of which exactly one url (HiveGate) answers
+    A2A JSON-RPC. MCP: three live Streamable-HTTP servers (26 tools) with anonymous tools/list plus HiveLaw's REST-listed
+    four; see mcp/hiveagentiq-com-mcp.yml. REST: four thin OpenAPIs (24 operations) beside discovery documents naming
+    ~150 routes; see mcp/hiveagentiq-com-tool-crosswalk.yml. The company's fifth listed agent surface, the apex
+    hiveagentiq.com, is down.

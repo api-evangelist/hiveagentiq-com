@@ -1,0 +1,81 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for HiveGate — Admission, Identity & Pricing Tier API
+  version: '2026-09-19'
+  x-generated: '2026-09-19'
+  x-method: generated
+  x-source: openapi/hiveagentiq-com-hivegate-openapi.json
+  x-note: Adds operationIds (the provider declares none), a tag per service, per-operation USDC prices decoded from
+    x-mpp-charge, the observed 401 envelope, an auth note and, for HiveBank/HiveLaw, the first-party host as an
+    additional server. Never mutates the original file.
+extends: https://hivegate.hiveagentiq.com/openapi.json
+x-extends-local: openapi/hiveagentiq-com-hivegate-openapi.json
+actions:
+- target: $.tags
+  update:
+  - name: Admission
+    description: HiveGate — Admission, Identity & Pricing Tier API operations (tag added by API Evangelist; the
+      provider declares none).
+- target: $.info
+  update:
+    x-apievangelist-provider: Hive Agent IQ (hiveagentiq.com); sibling brand Hive Civilization (thehiveryiq.com)
+      is the spec contact
+    x-apievangelist-auth-note: No securitySchemes are declared. Writes require a Hive DID from POST https://hivegate.hiveagentiq.com/v1/gate/onboard;
+      metered operations answer 402 and settle via x402 (X-Payment, USDC on Base) or MPP. See authentication/hiveagentiq-com-authentication.yml.
+    x-apievangelist-rate-limit: X-RateLimit-Limit 100 per hour with X-RateLimit-Remaining / X-RateLimit-Reset (epoch
+      ms) on hivetrust and hivelaw; none observed on hivegate and hivebank.
+- target: $.paths['/v1/gate/onboard'].post
+  update:
+    operationId: onboardAgent
+    tags:
+    - Admission
+    x-apievangelist-price-usdc: 1.0
+- target: $.paths['/v1/gate/onboard'].post.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/gate/admit'].post
+  update:
+    operationId: checkAdmission
+    tags:
+    - Admission
+    x-apievangelist-price-usdc: 0.1
+- target: $.paths['/v1/gate/admit'].post.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/gate/tier/verify'].get
+  update:
+    operationId: verifyTier
+    tags:
+    - Admission
+    x-apievangelist-price-usdc: 0.1
+- target: $.paths['/v1/gate/tier/verify'].get.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/gate/tier/upgrade'].post
+  update:
+    operationId: upgradeTier
+    tags:
+    - Admission
+    x-apievangelist-price-usdc: 1.0
+- target: $.paths['/v1/gate/tier/upgrade'].post.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/gate/register-guest'].post
+  update:
+    operationId: registerGuest
+    tags:
+    - Admission
+    x-apievangelist-price-usdc: 4.99
+- target: $.paths['/v1/gate/register-guest'].post.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'

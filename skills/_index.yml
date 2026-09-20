@@ -1,0 +1,30 @@
+generated: '2026-09-19'
+method: generated
+source: >-
+  openapi/hiveagentiq-com-hivetrust-openapi.json and openapi/hiveagentiq-com-hivegate-openapi.json (all routes verified
+  against the served specs by method + path, since the provider declares no operationIds), the live MCP tools/list
+  documents, the discovery JSON (hivetrust.json, hivegate.json), the llms.txt files and live probe results of
+  2026-09-19. Hive Agent IQ publishes no skills, AGENTS.md or SKILL files of its own (searched: github.com/srotzin
+  hivetrust/hivegate/hive-agent-sdk repos, the four service hosts).
+skills:
+- file: hiveagentiq-com-check-agent-trust.md
+  name: hiveagentiq-com-check-agent-trust
+  method: generated
+  description: Look up another agent's Hive trust standing before transacting with it — free lookup first, paid attested score only when a decision needs it.
+  operations: 3
+  routes: ['GET /v1/trust/lookup/{did}', 'GET /v1/trust/score/{did}', 'GET /v1/trust/reputation/proof']
+  mcp_tools: [hivetrust_get_trust_score, hivetrust_verify_agent_risk, hivetrust_verify_bond]
+- file: hiveagentiq-com-onboard-agent.md
+  name: hiveagentiq-com-onboard-agent
+  method: generated
+  description: Register an agent through HiveGate — free first DID, then present it on every metered call.
+  operations: 5
+  routes: ['POST /v1/gate/onboard', 'POST /v1/gate/register-guest', 'POST /v1/gate/admit', 'GET /v1/gate/tier/verify', 'POST /v1/gate/tier/upgrade']
+  mcp_tools: [hivegate_register_guest, hivegate_bridge_trust, hivegate_translate_intent]
+- file: hiveagentiq-com-issue-verify-credential.md
+  name: hiveagentiq-com-issue-verify-credential
+  method: generated
+  description: Issue, verify and revoke HiveCredentials / W3C VCs on HiveTrust with the fee and reversibility facts stated first.
+  operations: 5
+  routes: ['POST /v1/trust/did/generate', 'POST /v1/trust/vc/issue', 'POST /v1/credential/issue', 'POST /v1/credential/verify', 'POST /v1/credential/scope']
+  mcp_tools: [hivetrust_issue_credential, hivetrust_verify_credential, hivetrust_revoke_credential]

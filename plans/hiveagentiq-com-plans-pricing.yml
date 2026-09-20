@@ -1,0 +1,114 @@
+generated: '2026-09-19'
+method: probed
+source: https://hivetrust.hiveagentiq.com/.well-known/hive-payments.json
+docs:
+- https://hivegate.hiveagentiq.com/.well-known/hive-payments.json
+- https://hivelaw.hiveagentiq.com/.well-known/hive-payments.json
+- https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+- https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+plan_count: 16
+currency: USD / USDC
+model: >-
+  Pay-per-call in USDC through x402 (or MPP) on every metered route, plus subscription tiers published in two
+  machine-readable hive-payments.json documents that do not agree with each other. No human pricing page is
+  reachable on this domain: hivetrust.json points subscription_plans at https://hiveagentiq.com/#pricing and the
+  HiveGate products carry purchase_url values on hiveagentiq.com, and every hiveagentiq.com apex path returns the
+  Cloudflare "Error 1000: DNS points to prohibited IP" page (HTTP 403). The 402 envelopes point pricing_url at
+  https://www.thehiveryiq.com/pricing (the sibling brand, profiled in all/thehiveryiq-com).
+summary: >-
+  Sixteen priced tiers/products were read from the provider's own JSON on 2026-09-19: four USDC subscription tiers
+  on the HiveTrust document (Citizen Pass $49 one-time / Pro Operator $149 mo / Enterprise Operator $999 mo / Fleet
+  Commander $4,999 mo) and twelve Stripe-billed USD products on the HiveGate document (Sovereign DID $9.99 one-time
+  through HAHS Sovereign Infrastructure License $29,999 mo). Per-call USDC prices for individual operations are in
+  the OpenAPI x-mpp-charge values, the HiveTrust agent card fee_schedule, hivetrust.json and hivelaw's
+  hive-payments.json — recorded under metered_prices. The first DID is free and the provider advertises the first
+  paid call free and every sixth paid call free ("BOGO") on presentation of an x-hive-did header.
+plans:
+- id: citizen
+  name: Citizen Pass
+  price: 49
+  currency: USDC
+  period: one-time
+  included: 100 calls/day
+  source: well-known/hiveagentiq-com-hivetrust-hive-payments.json
+- id: pro
+  name: Pro Operator
+  price: 149
+  currency: USDC
+  period: monthly
+  included: 10,000 calls/month
+  source: well-known/hiveagentiq-com-hivetrust-hive-payments.json
+- id: enterprise
+  name: Enterprise Operator
+  price: 999
+  currency: USDC
+  period: monthly
+  included: Unlimited calls
+  source: well-known/hiveagentiq-com-hivetrust-hive-payments.json
+- id: fleet
+  name: Fleet Commander
+  price: 4999
+  currency: USDC
+  period: monthly
+  included: Unlimited+ calls
+  source: well-known/hiveagentiq-com-hivetrust-hive-payments.json
+- {id: sovereign-did, name: Sovereign DID, price: 9.99, currency: USD, period: one-time, purchase_url: 'https://hiveagentiq.com/did', purchase_url_status: 403, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: did-pack-10, name: DID Pack (10), price: 49, currency: USD, period: one-time, purchase_url: 'https://hiveagentiq.com/did-pack', purchase_url_status: 403, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: hiveinsure, name: HiveInsure Agent Coverage, price: 29, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: hivetrust-starter, name: HiveTrust Starter, price: 49, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: hivetrust-builder, name: HiveTrust Builder, price: 199, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: hivetrust-business, name: HiveTrust Business, price: 499, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: hivetrust-compliance-plus, name: HiveTrust Compliance+, price: 399, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: hivecarbon-fleet, name: HiveCarbon Fleet, price: 499, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: hivetrust-enterprise, name: HiveTrust Enterprise, price: 2499, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: eu-compliance-enterprise, name: EU Compliance Enterprise, price: 2499, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: hive-enterprise-suite, name: Hive Enterprise Suite, price: 4999, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+- {id: hahs-sovereign-infra, name: HAHS Sovereign Infrastructure License, price: 29999, currency: USD, period: monthly, source: well-known/hiveagentiq-com-hivegate-hive-payments.json}
+metered_prices:
+  hivetrust:
+  - {operation: 'GET /v1/trust/score/{did}', price_usdc: 0.10, source: openapi x-mpp-charge 100000}
+  - {operation: 'POST /v1/trust/did/generate', price_usdc: 1.00, source: openapi x-mpp-charge 1000000}
+  - {operation: 'POST /v1/trust/vc/issue', price_usdc: 0.50, source: openapi}
+  - {operation: 'GET /v1/identity/{did}/passport', price_usdc: 0.25, source: openapi}
+  - {operation: 'GET /v1/trust/reputation/proof', price_usdc: 0.10, source: openapi}
+  - {operation: 'POST /v1/credential/issue', price_usdc: 0.10, source: openapi}
+  - {operation: 'POST /v1/credential/verify', price_usdc: 0.01, source: openapi}
+  - {operation: 'POST /v1/credential/scope', price_usdc: 0.05, source: openapi}
+  - {operation: 'POST /v1/oracle/create-lease', price_usdc: '0.25-2.50 per lease (24h-168h)', source: agent card fee_schedule; /v1/oracle/streams}
+  - {operation: 'POST /v1/enterprise/subscribe', price_usdc: 500, period: monthly, source: agent card fee_schedule}
+  - {operation: 'POST /v1/bond/stake', price_usdc: 0.25, source: hivetrust.json bond.pricing}
+  - {operation: 'POST /v1/bond/unstake', price_usdc: 0.10, source: hivetrust.json bond.pricing}
+  - {operation: 'POST /v1/liquidation/buy', price_usdc: '0.50 + 15% platform fee on sale price', source: hivetrust.json liquidation.pricing}
+  - {operation: 'POST /v1/insurance/bind', price: '1.5% of insured value', source: hivetrust README}
+  hivegate:
+  - {operation: 'POST /v1/gate/onboard', price_usdc: 'free (first DID); openapi says $1.00', source: llms.txt vs openapi x-mpp-charge 1000000}
+  - {operation: 'POST /v1/gate/register-guest', price_usdc: 4.99, source: openapi; hivegate.json}
+  - {operation: 'POST /v1/gate/admit', price_usdc: 0.10, source: openapi}
+  - {operation: 'GET /v1/gate/tier/verify', price_usdc: 0.10, source: openapi}
+  - {operation: 'POST /v1/gate/tier/upgrade', price_usdc: 1.00, source: openapi}
+  - {operation: 'POST /v1/gate/translate-intent', price_usdc: 0.02, source: llms.txt; hivegate.json}
+  - {operation: 'POST /v1/gate/bridge-trust', price_usdc: 0.10, source: llms.txt; hivegate.json}
+  - {operation: 'POST /v1/gate/priority-onboard', price_usdc: 100, source: hivegate.json}
+  hivebank:
+  - {operation: 'POST /v1/bank/custody/attest', price_usdc: 0.25, source: openapi}
+  - {operation: 'POST /v1/bank/custody/policy', price_usdc: 0.25, source: openapi}
+  - {operation: 'POST /v1/bank/draw/instant | schedule | credit', price_usdc: 1.00, source: openapi}
+  hivelaw:
+  - {operation: 'POST /v1/law/contract/draft | review | seal', price_usdc: 0.50, source: openapi}
+  - {operation: 'POST /v1/comply/start', price_usdc: 500, source: openapi x-mpp-charge 500000000}
+  - {operation: 'POST /v1/comply/start/pro', price_usdc: 1500, source: openapi}
+  - {operation: 'POST /v1/comply/start/enterprise', price_usdc: 2500, source: openapi}
+  - {operation: 'seal_apply / seal_renew', price_usdc: '100 (Bronze), 500 (Silver), 1000 (Gold) per year', source: hivelaw hive-payments.json}
+  - {operation: 'dispute_filing', price_usdc: 0.25, note: 'refundable if ruling in your favor', source: hivelaw hive-payments.json}
+free_tier:
+  did: 'First DID free at POST /v1/gate/onboard ("No credit card required")'
+  first_call: 'First paid call free and every 6th paid call free when the x-hive-did header is presented (agent card bogo block)'
+  reads: 'health, openapi.json, llms.txt, robots.txt, sitemap.xml, /.well-known/*, trust lookup, oracle stream catalogue, jurisdictions, case-law stats, bond tiers/leaderboard/pool (per hivetrust.json; the tiers/pool routes answered 401 live)'
+payment_terms:
+  rails: [x402 USDC on Base, USDT on Base, USDC on Solana, USDCx/USAD/ALEO on Aleo, MPP (Tempo), Stripe checkout (HiveGate products)]
+  treasury: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'
+  stripe: 'mode: live, publishable_key_prefix pk_live_51TKfWmLPrw4 (HiveGate hive-payments.json)'
+  inconsistencies:
+  - The HiveTrust hive-payments.json lists payment_address 0x000…000 while every other document lists the 0x1518… treasury.
+  - HiveTrust's document has four USDC tiers; HiveGate's has twelve USD products; neither references the other.
+  - HiveGate onboarding is free per llms.txt and the 402 envelope but carries a $1.00 x-mpp-charge in the OpenAPI.

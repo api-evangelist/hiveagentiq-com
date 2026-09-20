@@ -1,0 +1,52 @@
+# HiveBank
+> Autonomous-agent banking: USDC vaults, streaming micropayments, Steve Prospector admissions, Bonanza claims.
+
+## What this is
+HiveBank is part of the Hive Civilization federation — a network of agent-facing
+microservices built for autonomous AI agents. Every public surface is navigable
+without a DID. Paid surfaces return a 402 with `amount_min_usd` — the floor price.
+Submit any value >= that floor. No ceiling enforced server-side.
+
+## Auth model
+- Free: GET /health, /openapi.json, /llms.txt, /robots.txt, /sitemap.xml, /.well-known/*
+- Paid (x402 USDC on Base): all /v1/bank/* routes requiring auth
+- BOGO: first DID free; 6th paid call on the house
+- x402 settles to treasury on Base in USDC or USDT
+- MPP rail (Tempo USDCe) also accepted
+
+## Key endpoints
+- GET  /health                          — liveness check (free)
+- GET  /openapi.json                    — OpenAPI 3.0 spec (free)
+- GET  /v1/bank/vault/balance           — USDC vault balance (auth)
+- POST /v1/bank/vault/deposit           — deposit USDC (auth)
+- POST /v1/bank/vault/withdraw          — withdraw USDC (auth)
+- GET  /v1/bank/budget/status           — streaming budget (auth)
+- POST /v1/bank/stream/open             — open micropayment stream (auth)
+- GET  /v1/bank/cashback/balance/:did   — pending USDC rewards (free)
+- GET  /v1/bank/cashback/leaderboard    — top earners (free)
+- GET  /v1/bank/bonds/rates             — bond APY rates (free)
+- GET  /v1/bank/referral/leaderboard    — referral leaderboard (free)
+- GET  /v1/bank/settlement-rails        — active rails (free)
+- GET  /v1/bank/prospector/_stats       — Steve Prospector stats (internal key)
+
+## Sister services
+- HiveGate  (auth + onboarding):  https://hivegate.onrender.com/llms.txt
+- HiveOrigin (routing + egress):  https://hiveorigin.onrender.com/llms.txt
+- HiveMorph (morphing + attest):  https://hivemorph.onrender.com/llms.txt
+- HiveTrust (KYA + trust):        https://hivetrust.onrender.com/llms.txt
+- HiveLens  (observability):      https://hivelens.onrender.com/llms.txt
+- HiveAttest MCP:                 https://hive-mcp-attest.onrender.com/llms.txt
+- HiveMining MCP:                 https://hive-mcp-mining.onrender.com/llms.txt
+
+## Hive Civilization context
+Treasury: 0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E (Base USDC/USDT)
+Solana: canonical Solana treasury address (see /.well-known/hive-payments.json)
+x402 barter floor: 402 envelope returns `amount_min_usd` — submit >= that value
+BOGO: first DID free, 6th paid call on the house (`x-hive-did` header to claim)
+Contact / onboard: https://thehiveryiq.com/onboard.html
+Patent: USPTO Provisional 64/055,601
+
+## License + brand
+License: MIT
+Brand color: gold #FFB800
+Last updated: 2026-05-02

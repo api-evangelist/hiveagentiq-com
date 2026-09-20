@@ -1,0 +1,25 @@
+generated: '2026-09-19'
+method: searched
+source: https://github.com/srotzin/hivetrust#webhooks
+docs:
+- https://github.com/srotzin/hivetrust
+asyncapi_found: false
+webhooks:
+  documented: true
+  where: 'Source README of the deployed HiveTrust service (github.com/srotzin/hivetrust, MIT, last pushed 2026-07-30) — "Webhooks" section of the API reference and WEBHOOK_SIGNING_SECRET in the environment table.'
+  registration:
+  - {method: POST, path: /v1/webhooks, description: 'Register a webhook endpoint (HMAC-SHA256 signed)', cost: Free}
+  - {method: GET, path: /v1/webhooks, description: List registered webhooks, cost: Free}
+  - {method: DELETE, path: '/v1/webhooks/:id', description: Remove webhook, cost: Free}
+  signing: 'HMAC-SHA256 over the payload with a server-side WEBHOOK_SIGNING_SECRET ("HMAC secret for webhook payloads"); header name not published.'
+  events: []
+  events_note: 'No event catalogue is published anywhere — not in the README, the served OpenAPI, the discovery JSON or the agent cards. The card declares capabilities.pushNotifications false.'
+  live_probe:
+  - {url: 'https://hivetrust.hiveagentiq.com/v1/webhooks', method: GET, http_status: 401, body: 'agent_not_registered envelope', note: 'The route exists on the deployed service and is gated on a Hive DID, consistent with the README.'}
+  not_in_contract: true
+summary: >-
+  HiveTrust ships a webhook subscription API (register / list / delete, HMAC-SHA256 signed) documented in its public
+  source README and present on the live host behind DID auth, but publishes no AsyncAPI and no list of the events a
+  subscriber would receive. Recorded as a Webhooks surface with an empty event catalogue; asyncapi_found is false and
+  nothing was fabricated to fill it. HiveGate's guest registration also takes a callback_url "for async notifications"
+  (hivegate_register_guest inputSchema) with no documented payload.

@@ -1,0 +1,66 @@
+generated: '2026-09-19'
+method: probed
+source: https://hivetrust.hiveagentiq.com/v1/stats
+docs:
+- https://github.com/srotzin/hivetrust#ctef-v031-endpoint
+- https://hivetrust.hiveagentiq.com/v1/pricing/status
+limit_count: 4
+summary: >-
+  HiveTrust and HiveLaw return X-RateLimit-Limit / X-RateLimit-Remaining / X-RateLimit-Reset on every response,
+  authenticated or not: a limit of 100 with a reset expressed in epoch MILLISECONDS on the hour boundary (observed
+  1789869600000 then 1789873200000, 3600 s apart), so the window is one hour per client. Retry-After is named in
+  Access-Control-Expose-Headers on HiveTrust alongside X-Payment-* and X-HiveTrust-Challenge, so the exhaustion signal
+  is declared even though a 429 was not provoked. HiveGate and HiveBank returned no rate-limit headers on any probed
+  response. Per-endpoint quotas the provider publishes in prose are listed below; nothing here is documented in the
+  OpenAPIs.
+rate_limits:
+- name: Per-client request window (HiveTrust)
+  scope: per-client
+  limit: 100
+  window: 1h (reset stamps are on the hour, epoch milliseconds)
+  metric: request
+  burst: null
+  headers: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset]
+  exhaustion_status: null
+  exhaustion_headers: [Retry-After]
+  observed:
+  - {url: 'https://hivetrust.hiveagentiq.com/v1/stats', http_status: 200, headers: 'x-ratelimit-limit: 100, x-ratelimit-remaining: 98, x-ratelimit-reset: 1789873200000'}
+  - {url: 'https://hivetrust.hiveagentiq.com/v1/webhooks', http_status: 401, headers: 'x-ratelimit-limit: 100, x-ratelimit-remaining: 99, x-ratelimit-reset: 1789873200000'}
+  - {url: 'https://hivetrust.hiveagentiq.com/mcp', method: POST, http_status: 200, headers: 'x-ratelimit-limit: 100, x-ratelimit-remaining: 79, x-ratelimit-reset: 1789869180'}
+  note: The /mcp response carried a reset in epoch SECONDS (1789869180) while REST responses carry milliseconds; two limiters with the same header names.
+- name: Per-client request window (HiveLaw)
+  scope: per-client
+  limit: 100
+  window: 1h
+  metric: request
+  headers: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset]
+  observed:
+  - {url: 'https://hivelaw.hiveagentiq.com/v1/jurisdictions', http_status: 200, headers: 'x-ratelimit-limit: 100, x-ratelimit-remaining: 99, x-ratelimit-reset: 1789873200000'}
+  - {url: 'https://hivelaw.hiveagentiq.com/v1/mcp/tools', http_status: 200, headers: 'x-ratelimit-limit: 100, x-ratelimit-remaining: 97'}
+- name: CTEF structural verification free allowance
+  scope: per-IP
+  limit: 10
+  window: 24h
+  metric: POST /verify request
+  exhaustion_status: 402
+  overage: $0.01 USDC per call via x402 on Base (chain 8453)
+  source: 'hivetrust README — "First 10 requests/day per IP are free … Beyond 10 free requests/day, the endpoint returns HTTP 402 with an x402 payment challenge"'
+  note: 'Live GET /verify and /verify/self-test on 2026-09-19 returned the catch-all 200 "not a real endpoint" body, so the README route could not be confirmed on the deployed service.'
+- name: Telemetry batch size
+  scope: per-request
+  limit: 1000
+  window: per call
+  metric: events in POST /v1/telemetry/ingest
+  source: 'hivetrust README — "Bulk behavioural event ingestion (up to 1 000 events/call)"'
+capacity_signals:
+- name: Pricing-engine utilisation window
+  source: https://hivetrust.hiveagentiq.com/v1/pricing/status
+  observed: '{"requests_in_window":2,"window_capacity":10000,"utilization":0.0002,"target_utilization":0.7,"next_adjustment_at":"…"}'
+  note: 'A platform-wide capacity counter that feeds the "autonomous" per-call fee (base_fee 0.0001–0.1 USDC), not a per-client limit; the fee rises with utilisation (EIP-1559-style primitive named in hivetrust.json).'
+hosts_without_headers:
+- {host: hivegate.hiveagentiq.com, observed: 'no RateLimit-* headers on 200, 402 or 404 responses'}
+- {host: hivebank.hiveagentiq.com, observed: 'no RateLimit-* headers on 200 or 401 responses'}
+exhaustion:
+  status: null
+  headers: [Retry-After]
+  note: Retry-After is exposed via CORS on HiveTrust; a 429 was not provoked and no docs state the status.

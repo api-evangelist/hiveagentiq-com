@@ -1,0 +1,169 @@
+generated: '2026-09-19'
+method: searched
+source: https://hivegate.hiveagentiq.com/llms.txt
+derived_from:
+- openapi/hiveagentiq-com-hivetrust-openapi.json
+- openapi/hiveagentiq-com-hivegate-openapi.json
+- openapi/hiveagentiq-com-hivebank-openapi.json
+- openapi/hiveagentiq-com-hivelaw-openapi.json
+- mcp/hiveagentiq-com-hivetrust-mcp-tools.json
+docs:
+- https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+- https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+- https://github.com/srotzin/hivetrust#api-reference
+base_urls:
+  hivetrust: https://hivetrust.hiveagentiq.com
+  hivegate: https://hivegate.hiveagentiq.com
+  hivebank: https://hivebank.hiveagentiq.com
+  hivelaw: https://hivelaw.hiveagentiq.com
+  note: 'Each host is a CNAME to a Render origin (hivetrust.onrender.com, hivegate.onrender.com, hivebank.onrender.com, hivelaw.onrender.com); the HiveBank and HiveLaw OpenAPIs and agent cards still declare the *.onrender.com origin as their server/url, while HiveTrust and HiveGate declare the hiveagentiq.com host. Both names serve identical bytes.'
+media_type: application/json
+auth:
+  style: >-
+    A free Hive DID (did:hive:*) from POST /v1/gate/onboard, presented as X-API-Key, Authorization: Bearer did:hive:*
+    or X-Hive-DID; HiveGate guests hold Bearer hgate_* tokens; metered routes then require x402 (or MPP) payment per
+    call. No OAuth. Detail in authentication/hiveagentiq-com-authentication.yml.
+  detail: authentication/hiveagentiq-com-authentication.yml
+response_envelope:
+  shapes:
+  - {hosts: [hivetrust, hivelaw], shape: '{"status":"success","service","version","request_id","timestamp","data":{…},"meta":{"processing_ms"}}', observed_on: 'GET / and /health'}
+  - {hosts: [hivetrust, hivelaw], shape: '{"success":true,"data":{…}}', observed_on: 'GET /v1/stats, /v1/pricing/status, /v1/oracle/streams, /v1/jurisdictions, /v1/case-law/stats, /v1/mcp/tools'}
+  - {hosts: [hivegate], shape: 'bare JSON object, no envelope', observed_on: 'GET /, /health, /v1/gate/queue/stats, /v1/gate/sample'}
+  - {hosts: [hivebank], shape: 'bare JSON object plus injected "_hive" and "_concierge" marketing blocks', observed_on: 'GET /health, MCP initialize'}
+  note: Two envelope conventions on the same host (HiveTrust) and no envelope on HiveGate; an agent cannot rely on one accessor for data.
+request_id:
+  header: X-Request-Id (HiveTrust responses; also request_id in the envelope and error_id in HiveGate 404s)
+  note: Observed x-request-id req_… on HiveTrust; HiveGate 404 bodies carry error_id err_….
+response_signing:
+  headers: [X-Hive-Prov-Iss, X-Hive-Prov-Ts, X-Hive-Prov-Sig, X-Hive-Prov-Pubkey, X-Hive-Prov-Payload]
+  pubkey: /v1/prov/pubkey (Ed25519) on each host
+  note: Every response is signed by the service DID; a client can verify with the published key.
+versioning:
+  style: URL path prefix /v1
+  detail: lifecycle/hiveagentiq-com-lifecycle.yml
+pagination:
+  documented: false
+  note: 'The hivetrust README says GET /v1/agents/:id/score/history has "pagination supported" but names no parameters; no spec declares page/cursor/limit parameters. Observed list responses (/v1/oracle/streams, /v1/jurisdictions, /v1/mcp/tools) are unpaginated arrays.'
+field_expansion: {supported: false}
+sparse_fields: {supported: false}
+metadata: {supported: true, note: 'hivetrust_register_agent inputSchema has a free-form "metadata" object.'}
+error_envelope:
+  detail: errors/hiveagentiq-com-problem-types.yml
+  note: Proprietary envelopes; two hosts answer 200 for unknown paths, so the body must be read.
+rate_limiting:
+  headers: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After]
+  detail: rate-limits/hiveagentiq-com-rate-limits.yml
+payment_signaling:
+  status: 402
+  x402_header: X-Payment
+  observed_payload: 'HiveBank POST / -> {"success":false,"error":"Payment required","code":"PAYMENT_REQUIRED","protocol":"x402","x402Version":1,"accepts":[{"scheme":"exact","network":"base","maxAmountRequired":"10000","resource":"https://hivebank.hiveagentiq.com/","description":"HiveBank API call ($0.01)","payTo":"0x1518…436E","maxTimeoutSeconds":300,"asset":"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913","mimeType":"application/json","extra":{"name":"USD Coin","version":"2","assetTransferMethod":"eip3009"}}]}'
+  floor_pricing: 'llms.txt: "Paid surfaces return a 402 with amount_min_usd — the floor price. Submit any value >= that floor. No ceiling enforced server-side."'
+  free_call_claim: 'x-hive-did header claims the first call free and every sixth paid call free.'
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  header: null
+  scope: []
+  retention: undocumented
+  description: >-
+    No Idempotency-Key header, parameter or body field exists on any write operation in the four OpenAPIs, in the
+    MCP inputSchemas, in the discovery documents or in the READMEs. The only idempotency statement the provider makes
+    is the MCP tool annotation idempotentHint, which is true ONLY on read tools (hivetrust_get_agent,
+    hivetrust_verify_identity, hivetrust_get_trust_score, hivetrust_verify_agent_risk, hivetrust_verify_credential,
+    hivetrust_verify_bond, hivetrust_get_platform_stats, hivegate_translate_intent, hivegate_bridge_trust) and false
+    on every mutating tool (register_agent, ingest_telemetry, issue_credential, revoke_credential, bind_insurance,
+    file_claim, file_dispute, create_lease, stake_bond, register_guest, execute). The provider therefore declares its
+    writes non-idempotent. A retried DID issuance, credential issue, bond stake, lease, insurance bind or guest
+    registration is a second paid call. The x402 PaymentRequirements carry maxTimeoutSeconds 300, which bounds one
+    payment authorisation but does not de-duplicate the underlying action.
+  gaps:
+  - No idempotency key on POST /v1/trust/did/generate ($1.00), /v1/credential/issue, /v1/oracle/create-lease, /v1/bond/stake, /v1/insurance/bind (1.5% of insured value).
+  - No idempotency key on POST /v1/gate/onboard, /v1/gate/register-guest ($4.99), /v1/bank/draw/*, /v1/law/contract/*, /v1/comply/start* ($500-$2,500).
+  - No safe-retry guidance anywhere for an ambiguous outcome after payment.
+dry_run_mode:
+  supported: false
+  status: none
+  note: >-
+    No sandbox, test mode or dry-run flag. What exists is free READ previews: GET /v1/gate/sample ("Rail 2 catnip: free
+    read sample"), GET /v1/gate/queue/stats, GET /v1/trust/lookup/{did} (free, unauthenticated trust lookup that
+    returned found:false for an unknown DID), GET /v1/oracle/streams and the hivetrust_get_insurance_quote MCP tool
+    (readOnlyHint true, "Get a dynamic insurance premium quote"). None rehearses a write.
+reversibility:
+  grade: documented
+  docs: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+  note: >-
+    Reversal operations exist for several write surfaces and are named in the provider's discovery documents and MCP
+    tool list, but NO reversal window is stated for any of them, so the grade is documented (0.4), not verified. The
+    operator's Terms (thehiveryiq.com/terms, sibling brand, "Settlement transactions on Base are final and irrevocable
+    on-chain. Chargebacks are not supported for on-chain settlements.") mean the payment leg of any action is not
+    reversible even where the action is. Nothing below asserts a window the provider has not written down.
+  write_surfaces:
+  - operation: 'POST /v1/credential/issue (spec) / hivetrust_issue_credential (MCP) / POST /v1/agents/:id/credentials (card fee schedule)'
+    action: Issue a W3C Verifiable Credential to an agent
+    reversal: revoke
+    reversal_operation: 'hivetrust_revoke_credential (MCP, destructiveHint true) / DELETE /v1/agents/:id/credentials/:cid ($0.10 per revocation event) / POST /v1/credential/scope with action revoke ($0.05)'
+    window: null
+    grade: documented
+    note: '"Revoked credentials immediately fail verification checks" (tool description). No time limit stated in either direction; the issuance fee is not refunded.'
+  - operation: 'hivetrust_stake_bond (MCP) / POST /v1/bond/stake ($0.25)'
+    action: Stake USDC to back an agent's reputation for lock_period_days
+    reversal: unstake
+    reversal_operation: 'POST /v1/bond/unstake ($0.10 processing fee)'
+    window: null
+    grade: documented
+    note: 'The stake takes a lock_period_days input, which implies a lock-up before unstaking, but no document states the permitted values or whether early unstaking is possible; slashing (POST /v1/bond/slash, "internal — HiveLaw only") is a non-reversible reduction.'
+  - operation: 'POST /v1/liquidation/list ($0.25 listing fee)'
+    action: List an agent DID + reputation + memories for sale
+    reversal: cancel
+    reversal_operation: 'POST /v1/liquidation/cancel/:listing_id ($0.05)'
+    window: null
+    grade: documented
+    note: 'A completed buy (POST /v1/liquidation/buy, 15% platform fee) has no documented reversal.'
+  - operation: 'hivetrust_bind_insurance (MCP) / POST /v1/insurance/bind (1.5% of insured value)'
+    action: Bind an insurance policy and deploy a USDC escrow contract on Base L2
+    reversal: none documented
+    reversal_operation: null
+    window: null
+    grade: none
+    note: 'Claims (hivetrust_file_claim) and disputes (hivetrust_file_dispute, "Initiates the dispute resolution workflow") are remedies after the fact, not reversals of the bind.'
+  - operation: 'POST /v1/disputes/file (HiveLaw, $0.25)'
+    action: File and auto-arbitrate a dispute
+    reversal: refund of the filing fee
+    reversal_operation: 'automatic — "refundable if ruling in your favor" (hivelaw hive-payments.json)'
+    window: null
+    grade: documented
+    note: 'A conditional refund of the fee, not a reversal of the ruling; POST /v1/disputes/:id/appeal ($0.50) is the escalation path.'
+  - operation: 'POST /v1/seal/apply (HiveLaw, $100-$1,000/year)'
+    action: Apply for a Hive Seal of Compliance
+    reversal: revoke
+    reversal_operation: 'POST /v1/seal/revoke/:sealId ("admin/automated", $0)'
+    window: null
+    grade: documented
+    note: 'Revocation is the provider''s action, not the holder''s; the annual fee has no stated refund.'
+  - operation: 'POST /v1/trust/did/generate ($1.00) / POST /v1/gate/onboard / hivetrust_register_agent'
+    action: Issue a DID and register an agent identity
+    reversal: deactivate
+    reversal_operation: 'DELETE /v1/agents/:id ("Deactivate agent (adds to revocation registry)", hivetrust README; not in the served spec)'
+    window: null
+    grade: documented
+  - operation: 'POST /v1/oracle/create-lease ($0.25-$2.50) / hivetrust_create_lease'
+    action: Buy a 24h/72h/168h context lease on a data stream
+    reversal: none documented
+    reversal_operation: null
+    window: null
+    grade: none
+    note: 'Leases expire by duration; renew_lease extends, nothing cancels or refunds.'
+  - operation: 'POST /v1/bank/draw/instant | schedule | credit ($1.00) / hivebank_deposit / hivebank_create_stream'
+    action: Move USDC (draw, deposit, open a payment stream)
+    reversal: none documented
+    reversal_operation: null
+    window: null
+    grade: none
+    note: 'On-chain settlement is stated to be final; no cancel-stream or reverse-draw operation is published.'
+cross_links:
+  authentication: authentication/hiveagentiq-com-authentication.yml
+  errors: errors/hiveagentiq-com-problem-types.yml
+  lifecycle: lifecycle/hiveagentiq-com-lifecycle.yml
+  rate_limits: rate-limits/hiveagentiq-com-rate-limits.yml
+  plans: plans/hiveagentiq-com-plans-pricing.yml

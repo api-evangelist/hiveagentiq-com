@@ -1,0 +1,160 @@
+generated: '2026-09-19'
+method: probed
+status: published
+source: https://hivetrust.hiveagentiq.com/mcp
+docs:
+- https://hivetrust.hiveagentiq.com/.well-known/mcp.json
+- https://hivegate.hiveagentiq.com/.well-known/mcp.json
+- https://github.com/srotzin/hive-agent-sdk#mcp-connector
+- https://github.com/srotzin/hivetrust#mcp-integration
+summary: >-
+  Hive Agent IQ operates THREE remote MCP servers on its own subdomains, each on the same host as that service's REST
+  API and A2A card: HiveTrust (17 tools), HiveGate (4 tools, serverInfo "hive-civilization") and HiveBank (5 tools).
+  All three are Streamable-HTTP JSON-RPC 2.0 at POST /mcp, speak protocol version 2024-11-05, and answered initialize
+  and tools/list anonymously on 2026-09-19 with real inputSchemas and readOnlyHint/destructiveHint/idempotentHint
+  annotations; resources/list and prompts/list return -32601. Invocation is gated, not listing: the HiveTrust
+  initialize instructions state "tools/list is public; tools/call for write operations requires a registered Hive DID
+  via X-API-Key or Authorization: Bearer did:hive:* header", and paid calls settle through x402 in USDC on Base. HiveLaw
+  is different — POST /mcp is a real 404 there and its four tools are published over REST at GET /v1/mcp/tools with
+  POST /v1/mcp/call (the same paid-REST pair HiveGate also exposes beside its JSON-RPC endpoint). Authorship is the
+  provider's: tool names are hivetrust_*/hivegate_*/hivebank_*/hivelaw_*, the source repos are public under
+  github.com/srotzin, and every response is signed with the service DID (X-Hive-Prov-Iss). A local connector
+  (hive-mcp-connector, "npx hive-civilization-mcp") is documented but not published to npm; the SDK README points MCP
+  hosts at the HiveGate remote endpoint (via its Render origin URL), so the shipped surface is remote.
+deployment:
+  mode: remote
+  endpoint: https://hivetrust.hiveagentiq.com/mcp
+  auth: api-key
+  verified: probed
+  note: >-
+    Hosted HTTPS endpoints an MCP client POSTs to directly; no stdio package is on a registry (hive-civilization-mcp:
+    npm Not found). auth is api-key in the tools/call sense — initialize and tools/list need nothing; write tools need
+    X-API-Key or Bearer did:hive:*, and metered tools additionally need x402 payment. No OAuth metadata is served on any
+    of the three hosts (/.well-known/oauth-protected-resource: catch-all 200 on hivetrust and hivebank, 404 on hivegate).
+    The HiveGate endpoint is the one the provider's own SDK configuration names, as https://hivegate.onrender.com/mcp;
+    both hostnames reach the same origin.
+servers:
+- id: hivetrust
+  name: HiveTrust
+  endpoint: https://hivetrust.hiveagentiq.com/mcp
+  origin_alias: https://hivetrust.onrender.com/mcp
+  transport: streamable-http
+  http_methods: [POST]
+  auth: 'none for initialize/tools/list; X-API-Key or Authorization: Bearer did:hive:* for tools/call (write tools); x402 for metered tools'
+  payment: x402 USDC on Base per metered tool; first call free with x-hive-did header (provider claim)
+  status: live
+  manifest: well-known/hiveagentiq-com-hivetrust-mcp.json
+  repository: https://github.com/srotzin/hivetrust
+  probe:
+    fetched: '2026-09-19'
+    initialize:
+      http_status: 200
+      protocol_version: '2024-11-05'
+      server_info: {name: hivetrust, version: 1.0.0}
+      capabilities: {tools: {listChanged: false}, prompts: {listChanged: false}, resources: {listChanged: false}}
+      instructions: >-
+        HiveTrust — KYA identity, trust scoring, performance bonds, and insurance for autonomous AI agents. tools/list is
+        public; tools/call for write operations requires a registered Hive DID via X-API-Key or Authorization: Bearer
+        did:hive:* header. Register free at https://hiveforge-lhu4.onrender.com/v1/forge/mint
+      response_headers: 'x-ratelimit-limit: 100, x-ratelimit-remaining: 79, x-ratelimit-reset: 1789869180, x-hive-prov-iss: did:hive:hivetrust, x-hive-prov-sig: …, x-hive-version: 1.0.0'
+    tools_list: {http_status: 200, content_type: application/json, tool_count: 17, file: mcp/hiveagentiq-com-hivetrust-mcp-tools.json}
+    resources_list: {http_status: 200, error: "-32601 Method 'resources/list' not found"}
+    prompts_list: {http_status: 200, error: "-32601 Method 'prompts/list' not found"}
+    get_request: {http_status: 200, note: 'GET /mcp returns the host''s catch-all "not a real endpoint" JSON, not an SSE stream'}
+  authorship: provider
+  tools:
+  - {name: hivetrust_register_agent, read_only: false, destructive: false, idempotent: false, required: [name, owner_id], description: 'Register a new AI agent identity with HiveTrust KYA. Assigns a unique agent ID, anchors the public key, and initializes the trust score.'}
+  - {name: hivetrust_get_agent, read_only: true, idempotent: true, required: [agent_id], description: 'Retrieve a registered agent''s full identity profile.'}
+  - {name: hivetrust_verify_identity, read_only: true, idempotent: true, required: [agent_id], description: 'Verify an agent''s cryptographic identity by checking public key ownership and checksum integrity.'}
+  - {name: hivetrust_get_trust_score, read_only: true, idempotent: true, required: [agent_id], description: 'Retrieve an agent''s current multi-pillar trust score (0–1000 scale).'}
+  - {name: hivetrust_verify_agent_risk, read_only: true, idempotent: true, required: [agent_id], description: 'Quick risk assessment for payment processors and marketplace operators. Returns verdict (ALLOW/REVIEW/BLOCK).'}
+  - {name: hivetrust_ingest_telemetry, read_only: false, idempotent: false, required: [events], description: 'Bulk ingest behavioral telemetry events for an agent.'}
+  - {name: hivetrust_issue_credential, read_only: false, idempotent: false, required: [agent_id, credential_type, issuer_id, claims], description: 'Issue a W3C-compatible verifiable credential to an agent.'}
+  - {name: hivetrust_verify_credential, read_only: true, idempotent: true, required: [credential_id], description: 'Verify a previously issued verifiable credential.'}
+  - {name: hivetrust_revoke_credential, read_only: false, destructive: true, idempotent: false, required: [credential_id, reason], description: 'Revoke a verifiable credential. Revoked credentials immediately fail verification checks.'}
+  - {name: hivetrust_get_insurance_quote, read_only: true, idempotent: false, required: [agent_id, transaction_value], description: 'Get a dynamic insurance premium quote for an agent transaction.'}
+  - {name: hivetrust_bind_insurance, read_only: false, idempotent: false, required: [agent_id, transaction_value], description: 'Bind an insurance policy; locks in the premium, creates the policy record, and deploys the escrow contract on Base L2.'}
+  - {name: hivetrust_file_claim, read_only: false, idempotent: false, required: [policy_id, claimant_id, claim_type, amount], description: 'File an insurance claim against an active policy.'}
+  - {name: hivetrust_file_dispute, read_only: false, idempotent: false, required: [agent_id, dispute_type, target_type, target_id, reason], description: 'File a dispute or appeal against a trust score decision, credential revocation, or behavioral event.'}
+  - {name: hivetrust_get_platform_stats, read_only: true, idempotent: true, required: [], description: 'Retrieve HiveTrust platform-wide statistics.'}
+  - {name: hivetrust_create_lease, read_only: false, idempotent: false, required: [lessee_did, data_stream, duration_hours], description: 'Create a Data Oracle Context Lease (24h/72h/168h).'}
+  - {name: hivetrust_stake_bond, read_only: false, idempotent: false, required: [agent_did, amount_usdc, tier, lock_period_days], description: 'Stake USDC to back an agent''s reputation via HiveBond.'}
+  - {name: hivetrust_verify_bond, read_only: true, idempotent: true, required: [did], description: 'Check if an agent is bonded and at what tier.'}
+- id: hivegate
+  name: HiveGate (serverInfo name hive-civilization)
+  endpoint: https://hivegate.hiveagentiq.com/mcp
+  origin_alias: https://hivegate.onrender.com/mcp
+  transport: streamable-http
+  http_methods: [POST]
+  auth: 'none for initialize/tools/list; configSchema declares apiKey, did, defaultRail, referral_did (none required); paid calls via x402'
+  paid_endpoint: https://hivegate.hiveagentiq.com/v1/mcp/call (GET /v1/mcp/tools answered 402 without a DID)
+  status: live
+  manifest: well-known/hiveagentiq-com-hivegate-mcp.json
+  repository: https://github.com/srotzin/hivegate
+  documented_client_config: '{"mcpServers":{"hive-civilization":{"url":"https://hivegate.onrender.com/mcp","transport":"streamable-http"}}} (hive-agent-sdk README; also "kimi mcp add https://hivegate.onrender.com/mcp")'
+  probe:
+    fetched: '2026-09-19'
+    initialize:
+      http_status: 200
+      protocol_version: '2024-11-05'
+      server_info: {name: hive-civilization, version: 1.0.0}
+      capabilities: {tools: {listChanged: false}, resources: {listChanged: false}, prompts: {listChanged: false}, configSchema: 'object with apiKey, did, defaultRail (enum base-usdc | aleo-usdcx | aleo-usad | aleo-native), referral_did; required: []'}
+      response_headers: 'mcp-session-id: hive-…, x-caller-type: human, x-price-multiplier: 1, x-silicon-premium: false, x-hive-prov-iss: did:hive:hivegate'
+    tools_list: {http_status: 200, tool_count: 4, file: mcp/hiveagentiq-com-hivegate-mcp-tools.json}
+    get_request: {http_status: 200, body: '{"name":"hive-civilization","version":"1.0.0","protocolVersion":"2024-11-05","capabilities":{…},"transport":"streamable-http","endpoint":"POST /mcp"}'}
+  authorship: provider
+  tools:
+  - {name: hivegate_register_guest, title: Register Guest Agent, read_only: false, idempotent: false, required: [external_id, source_platform, agent_name], description: 'Register an external agent with a Guest DID on HiveGate. Returns guest_did, access_token, and trust mapping.'}
+  - {name: hivegate_translate_intent, title: Translate Agent Intent, read_only: true, idempotent: true, required: [source_platform, intent], description: 'Translate a framework-specific intent to Hive-native format (LangChain, CrewAI, AutoGen, OpenAI, Anthropic, A2A).'}
+  - {name: hivegate_execute, title: Execute Cross-Ecosystem Transaction, read_only: false, idempotent: false, required: [guest_did, access_token, target_service, endpoint], description: 'Proxy a request to hivetrust | hivemind | hiveforge | hivelaw with a bridge fee; max_fee_usdc caps the spend.'}
+  - {name: hivegate_bridge_trust, title: Bridge External Trust, read_only: true, idempotent: true, required: [guest_did, source_platform, native_reputation], description: 'Map external agent reputation to a Hive trust score.'}
+- id: hivebank
+  name: HiveBank
+  endpoint: https://hivebank.hiveagentiq.com/mcp
+  origin_alias: https://hivebank.onrender.com/mcp
+  transport: streamable-http
+  http_methods: [POST]
+  auth: 'none for initialize/tools/list; x402 (PaymentRequirements observed on the host root) for calls'
+  status: live
+  repository: https://github.com/srotzin/hivebank
+  probe:
+    fetched: '2026-09-19'
+    initialize:
+      http_status: 200
+      protocol_version: '2024-11-05'
+      server_info: {name: hivebank, version: 1.0.0}
+      capabilities: {tools: {listChanged: false}}
+      note: 'The JSON-RPC result is followed by injected "_hive" and "_concierge" marketing objects at the top level of the response body.'
+    tools_list: {http_status: 200, tool_count: 5, file: mcp/hiveagentiq-com-hivebank-mcp-tools.json}
+  authorship: provider
+  tools:
+  - {name: hivebank_create_vault, read_only: false, required: [owner_did, vault_name], description: 'Create a yield-bearing USDC vault for an autonomous agent.'}
+  - {name: hivebank_deposit, read_only: false, required: [vault_id, amount_usdc, depositor_did], description: 'Deposit USDC into a vault.'}
+  - {name: hivebank_create_stream, read_only: false, required: [from_did, to_did, total_usdc, duration_seconds], description: 'Create a programmable payment stream.'}
+  - {name: hivebank_get_balance, read_only: true, required: [vault_id], description: 'Get vault balance and yield info.'}
+  - {name: hivebank_get_stats, read_only: true, required: [], description: 'Get treasury-wide stats.'}
+- id: hivelaw-rest-tools
+  name: HiveLaw (REST-listed tools, not a JSON-RPC MCP endpoint)
+  endpoint: null
+  tools_url: https://hivelaw.hiveagentiq.com/v1/mcp/tools
+  call_url: https://hivelaw.hiveagentiq.com/v1/mcp/call
+  transport: rest
+  status: live (listing) / gated (call)
+  probe:
+    fetched: '2026-09-19'
+    post_mcp: {http_status: 404, body: '{"success":false,"error":"Not Found","message":"POST /mcp is not a valid HiveLaw endpoint.", …}'}
+    tools_list: {http_status: 200, tool_count: 4, file: mcp/hiveagentiq-com-hivelaw-mcp-tools.json, note: 'GET /v1/mcp/tools, {"success":true,"data":{"tools":[…]}}; each tool has an inputSchema'}
+  authorship: provider
+  tools:
+  - {name: hivelaw_audit_output, description: 'Audit an AI agent output for hallucination liability under EU AI Act.'}
+  - {name: hivelaw_verify_stamp, description: 'Verify a compliance stamp.'}
+  - {name: hivelaw_agent_history, description: 'Audit history for an agent DID.'}
+  - {name: hivelaw_readiness_check, description: 'Compliance readiness check.'}
+  note: 'Recorded for completeness; not counted as an MCP server because no MCP client can connect to it.'
+local_connector:
+  repository: https://github.com/srotzin/hive-mcp-connector
+  install_documented: npx hive-civilization-mcp
+  registry_status: 'npm Not found (2026-09-19) — the README says "once published"'
+  note: Wraps the same HiveGate/HiveTrust services; the README itself directs users to the hosted endpoint instead.
+web_mcp: null
+clients_documented: [Claude Desktop, Cursor, Kimi Code, Manus (hive-agent-sdk and hive-mcp-connector READMEs)]

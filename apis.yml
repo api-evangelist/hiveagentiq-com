@@ -1,23 +1,329 @@
 aid: hiveagentiq-com
 name: Hive Agent IQ
-description: 'Hive Agent IQ is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Hive Agent IQ (hiveagentiq.com) is the agent-platform brand of Hive Civilization — a single-founder Wyoming company
+  (Stephen Rotzin) whose sibling brand thehiveryiq.com is profiled separately — running a federation of agent-facing
+  microservices on its own subdomains for autonomous AI agents: HiveTrust (KYA identity, W3C DIDs and verifiable
+  credentials, 0-1000 behavioural trust scoring, USDC performance bonds, data-oracle context leases, insurance and
+  disputes), HiveGate (free first-DID onboarding, adapters for LangChain, CrewAI, AutoGen, OpenAI, Anthropic and A2A
+  agents, trust bridging), HiveBank (treasury attestation, USDC vaults and payment streams) and HiveLaw (contract
+  drafting, dispute arbitration, EU AI Act hallucination audits and compliance seals). Each service publishes an
+  OpenAPI 3.0.3 document, an A2A 0.3.0 agent card, an ai-plugin.json manifest and, on three of the four, a remote MCP
+  server whose tools/list answers anonymously; every metered operation is priced in USDC and settled per call through
+  x402 (or the MPP rail) on Base, with responses Ed25519-signed by the service DID. The apex website hiveagentiq.com,
+  its legal pages and the HiveForge host returned Cloudflare Error 1000 ("DNS points to prohibited IP", HTTP 403) for
+  every path throughout the 2026-09-19 profiling pass.
 url: https://raw.githubusercontent.com/api-evangelist/hiveagentiq-com/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:a2a-registry
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-09-19 (local-v3; was a2a-registry harvest stub)
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
 tags:
-- Company
-apis: []
+- Agents
+- Agent Commerce
+- A2A
+- MCP
+- x402
+- Decentralized Identity
+- Verifiable Credentials
+- Trust Scoring
+- Stablecoins
+- Insurance
+- Compliance
+- agent-native
+- United States
+tags_raw:
+- Agents
+- Agent commerce
+- A2A
+- MCP
+- x402
+- Decentralized identity
+- Verifiable credentials
+- Trust scoring
+- Stablecoins
+- Insurance
+- Compliance
+- Agent-native
+- United States
+apis:
+- aid: hiveagentiq-com:hivetrust-kya-identity-trust-api
+  name: HiveTrust KYA Identity & Trust API
+  description: >-
+    Identity and trust substrate for AI agents on hivetrust.hiveagentiq.com: DID issuance ($1.00 USDC), W3C VC and
+    scoped HiveCredential issue/verify/scope ($0.01-$0.50), trust-score lookup ($0.10; a free unauthenticated
+    /v1/trust/lookup/{did} also answers), identity passport and reputation proof, plus data-oracle leases, USDC bonds,
+    insurance, disputes and an agent liquidation market documented in the /.well-known/hivetrust.json discovery
+    document. The served OpenAPI 3.0.3 is an 8-operation stub (no schemas, no operationIds, no securitySchemes) with an
+    x-mpp payment extension; authentication is a Hive DID (X-API-Key, Bearer did:hive:* or X-Hive-DID) plus x402 or
+    MPP payment per call. Every response carries X-RateLimit-* (100/hour) and Ed25519 provenance headers. The host
+    answers HTTP 200 with a "not a real endpoint" JSON body for unknown paths.
+  humanURL: https://github.com/srotzin/hivetrust#api-reference
+  baseURL: https://hivetrust.hiveagentiq.com
+  tags:
+  - Decentralized Identity
+  - Verifiable Credentials
+  - Trust Scoring
+  - Insurance
+  - x402
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-hivetrust-openapi.json
+  - type: OpenAPI
+    name: Provider-hosted OpenAPI 3.0.3
+    url: https://hivetrust.hiveagentiq.com/openapi.json
+  - type: Documentation
+    name: API reference (source README)
+    url: https://github.com/srotzin/hivetrust#api-reference
+  - type: APIReference
+    name: Service discovery document
+    url: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivetrust-llms.txt
+  - type: LLMsTxt
+    url: https://hivetrust.hiveagentiq.com/llms.txt
+  - type: MCPServer
+    url: mcp/hiveagentiq-com-mcp.yml
+  - type: MCPServer
+    name: HiveTrust MCP endpoint (Streamable HTTP, 17 tools)
+    url: https://hivetrust.hiveagentiq.com/mcp
+  - type: ToolCrosswalk
+    url: mcp/hiveagentiq-com-tool-crosswalk.yml
+  - type: AgentCard
+    url: a2a/hiveagentiq-com-a2a.yml
+  - type: AgentCard
+    name: A2A Agent Card (provider-hosted)
+    url: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
+  - type: Overlay
+    url: overlays/hiveagentiq-com-hivetrust-overlay.yaml
+  - type: Authentication
+    url: authentication/hiveagentiq-com-authentication.yml
+  - type: ErrorCatalog
+    url: errors/hiveagentiq-com-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/hiveagentiq-com-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/hiveagentiq-com-webhooks.yml
+  - type: DataModel
+    url: data-model/hiveagentiq-com-data-model.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: SourceCode
+    url: https://github.com/srotzin/hivetrust
+- aid: hiveagentiq-com:hivegate-admission-identity-api
+  name: HiveGate Admission, Identity & Pricing Tier API
+  description: >-
+    Onboarding gateway for the Hive network on hivegate.hiveagentiq.com: POST /v1/gate/onboard mints the first
+    did:hive DID and API key free, guest registration ($4.99) bridges agents from LangChain, CrewAI, AutoGen, OpenAI,
+    Anthropic and A2A with an hgate_* token, and admission, tier verification and upgrades are metered at $0.10-$1.00.
+    A 5-operation OpenAPI 3.0.3 stub sits beside a 25-route discovery document (/.well-known/hivegate.json), a real
+    llms.txt guide, and a remote MCP server (serverInfo "hive-civilization", 4 tools) that the provider's SDK config
+    names as its canonical MCP endpoint. The host root is also a live A2A JSON-RPC responder. Unauthenticated metered
+    calls return a 402 HIVE_402 envelope with the USDC amount and rails; unknown /.well-known paths return a real 404.
+  humanURL: https://hivegate.hiveagentiq.com/llms.txt
+  baseURL: https://hivegate.hiveagentiq.com
+  tags:
+  - Agents
+  - Decentralized Identity
+  - A2A
+  - MCP
+  - x402
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-hivegate-openapi.json
+  - type: OpenAPI
+    name: Provider-hosted OpenAPI 3.0.3
+    url: https://hivegate.hiveagentiq.com/openapi.json
+  - type: Documentation
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: APIReference
+    name: Service discovery document
+    url: https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+  - type: GettingStarted
+    name: Onboarding page (operator's sibling brand site, named by every Hive service)
+    url: https://thehiveryiq.com/onboard.html
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivegate-llms.txt
+  - type: LLMsTxt
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: MCPServer
+    url: mcp/hiveagentiq-com-mcp.yml
+  - type: MCPServer
+    name: HiveGate MCP endpoint (Streamable HTTP, 4 tools)
+    url: https://hivegate.hiveagentiq.com/mcp
+  - type: ToolCrosswalk
+    url: mcp/hiveagentiq-com-tool-crosswalk.yml
+  - type: AgentCard
+    url: a2a/hiveagentiq-com-a2a.yml
+  - type: AgentCard
+    name: A2A Agent Card (provider-hosted; url is a live JSON-RPC responder)
+    url: https://hivegate.hiveagentiq.com/.well-known/agent-card.json
+  - type: Overlay
+    url: overlays/hiveagentiq-com-hivegate-overlay.yaml
+  - type: Authentication
+    url: authentication/hiveagentiq-com-authentication.yml
+  - type: ErrorCatalog
+    url: errors/hiveagentiq-com-problem-types.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: SourceCode
+    url: https://github.com/srotzin/hivegate
+- aid: hiveagentiq-com:hivebank-treasury-api
+  name: HiveBank Treasury Attestation & Settlement API
+  description: >-
+    Agent treasury layer on hivebank.hiveagentiq.com: the served OpenAPI 3.0.3 covers custody and treasury-policy
+    attestation ($0.25) and instant, scheduled and credit-line draws ($1.00), while the root discovery document and
+    llms.txt describe USDC vaults, yield routing (Aave, Morpho, Spark, Compound on Base), payment streams, budgets and
+    cashback that the 5-tool remote MCP server exposes. The provider states it never custodies funds. Any POST to the
+    host without payment returns a real x402 v1 PaymentRequirements payload ($0.01, Base USDC, EIP-3009). The OpenAPI
+    and agent card still name the hivebank.onrender.com origin the first-party host CNAMEs to; unknown paths answer a
+    200 "unknown path" hint body.
+  humanURL: https://hivebank.hiveagentiq.com/llms.txt
+  baseURL: https://hivebank.hiveagentiq.com
+  tags:
+  - Stablecoins
+  - Agent Commerce
+  - MCP
+  - x402
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-hivebank-openapi.json
+  - type: OpenAPI
+    name: Provider-hosted OpenAPI 3.0.3
+    url: https://hivebank.hiveagentiq.com/openapi.json
+  - type: Documentation
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivebank-llms.txt
+  - type: LLMsTxt
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: MCPServer
+    url: mcp/hiveagentiq-com-mcp.yml
+  - type: MCPServer
+    name: HiveBank MCP endpoint (Streamable HTTP, 5 tools)
+    url: https://hivebank.hiveagentiq.com/mcp
+  - type: ToolCrosswalk
+    url: mcp/hiveagentiq-com-tool-crosswalk.yml
+  - type: AgentCard
+    url: a2a/hiveagentiq-com-a2a.yml
+  - type: AgentCard
+    name: A2A Agent Card (provider-hosted)
+    url: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
+  - type: Overlay
+    url: overlays/hiveagentiq-com-hivebank-overlay.yaml
+  - type: Authentication
+    url: authentication/hiveagentiq-com-authentication.yml
+  - type: SourceCode
+    url: https://github.com/srotzin/hivebank
+- aid: hiveagentiq-com:hivelaw-legal-compliance-api
+  name: HiveLaw AI Legal Contracts & Compliance API
+  description: >-
+    Legal and compliance layer on hivelaw.hiveagentiq.com: contract drafting, AI review and on-chain sealing ($0.50
+    each) and three compliance-tier programmes ($500, $1,500, $2,500) in the served 6-operation OpenAPI 3.0.3, with
+    disputes, appeals, jurisdiction data (free GET /v1/jurisdictions), a 555-case precedent corpus, EU AI Act
+    hallucination audits, compliance stamps and a Bronze/Silver/Gold Seal of Compliance ($100-$1,000/year) listed in
+    /.well-known/hivelaw.json and priced in /.well-known/hive-payments.json. Four MCP-shaped tools are published over
+    REST (GET /v1/mcp/tools, POST /v1/mcp/call); POST /mcp is a real 404, so no MCP client can connect. Unknown paths
+    return a genuine 404 that doubles as the endpoint catalogue.
+  humanURL: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
+  baseURL: https://hivelaw.hiveagentiq.com
+  tags:
+  - Compliance
+  - Legal
+  - Agents
+  - x402
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-hivelaw-openapi.json
+  - type: OpenAPI
+    name: Provider-hosted OpenAPI 3.0.3
+    url: https://hivelaw.hiveagentiq.com/openapi.json
+  - type: APIReference
+    name: Service discovery document
+    url: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
+  - type: AgentCard
+    url: a2a/hiveagentiq-com-a2a.yml
+  - type: AgentCard
+    name: A2A Agent Card (provider-hosted)
+    url: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
+  - type: Overlay
+    url: overlays/hiveagentiq-com-hivelaw-overlay.yaml
+  - type: Authentication
+    url: authentication/hiveagentiq-com-authentication.yml
+  - type: ErrorCatalog
+    url: errors/hiveagentiq-com-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/hiveagentiq-com-rate-limits.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/hiveagentiq-com-agentic-access.yml
 - type: Website
   url: https://hiveagentiq.com/
+- type: GitHubOrganization
+  name: Source account for hivetrust, hivegate, hivebank and the SDKs
+  url: https://github.com/srotzin
+- type: GettingStarted
+  name: Onboarding page (operator's sibling brand site, named by every Hive service)
+  url: https://thehiveryiq.com/onboard.html
+- type: SignUp
+  url: https://thehiveryiq.com/onboard/
+- type: Pricing
+  name: Machine-readable pricing (hive-payments.json)
+  url: https://hivetrust.hiveagentiq.com/.well-known/hive-payments.json
+- type: TermsOfService
+  name: Hive Civilization terms (operator's sibling brand; the hiveagentiq.com/terms the services link is down)
+  url: https://thehiveryiq.com/terms
+- type: PrivacyPolicy
+  name: Hive Civilization privacy policy (operator's sibling brand)
+  url: https://thehiveryiq.com/privacy
+- type: AgentCard
+  url: a2a/hiveagentiq-com-a2a.yml
+- type: MCPServer
+  url: mcp/hiveagentiq-com-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/hiveagentiq-com-tool-crosswalk.yml
+- type: WellKnown
+  url: well-known/hiveagentiq-com-well-known.yml
+- type: LLMsTxt
+  url: llms/hiveagentiq-com-hivegate-llms.txt
+- type: Authentication
+  url: authentication/hiveagentiq-com-authentication.yml
+- type: Conventions
+  url: conventions/hiveagentiq-com-conventions.yml
+- type: ErrorCatalog
+  url: errors/hiveagentiq-com-problem-types.yml
+- type: DataModel
+  url: data-model/hiveagentiq-com-data-model.yml
+- type: RateLimits
+  url: rate-limits/hiveagentiq-com-rate-limits.yml
+- type: Plans
+  url: plans/hiveagentiq-com-plans-pricing.yml
+- type: Packages
+  url: packages/hiveagentiq-com-packages.yml
+- type: SDKs
+  url: packages/hiveagentiq-com-packages.yml
+- type: Conformance
+  url: conformance/hiveagentiq-com-conformance.yml
+- type: Lifecycle
+  url: lifecycle/hiveagentiq-com-lifecycle.yml
+- type: DomainSecurity
+  url: security/hiveagentiq-com-domain-security.yml
+- type: Webhooks
+  url: asyncapi/hiveagentiq-com-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Overlay
+  url: overlays/hiveagentiq-com-hivetrust-overlay.yaml
+x-enrichment:
+  date: '2026-09-19'
+  status: enriched
+  artifacts_added: 59
+  pass: local-v3

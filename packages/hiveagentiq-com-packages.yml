@@ -1,0 +1,97 @@
+generated: '2026-09-19'
+method: searched
+source: https://pypi.org/pypi/hive-civilization-sdk/json
+docs:
+- https://github.com/srotzin/hive-agent-sdk
+- https://github.com/srotzin/hivetrust#sdk
+- https://github.com/srotzin/hive-mcp-connector
+note: >-
+  One first-party package is on a public registry: hive-civilization-sdk on PyPI (1.0.0, uploaded 2026-04-16,
+  author Steve Rotzin, MIT), the Python half of github.com/srotzin/hive-agent-sdk, which wraps HiveGate onboarding,
+  HiveTrust identity/trust calls and USDC settlement. Every other package the provider's READMEs name — npm
+  hive-agent-sdk (the JavaScript half of the same repo), @hivetrust/sdk and PyPI hivetrust (named in the hivetrust
+  README's SDK section, "See packages/npm/ for the full SDK source"), npm hive-civilization-mcp (the hive-mcp-connector
+  README says "once published") and @hive-protocol/sdk / PyPI hive-protocol (hive-protocol-sdk and hive-py READMEs)
+  — returned Not found / 404 from registry.npmjs.org and pypi.org on 2026-09-19. Those entries carry version: null
+  with the registry answer, not a guess. PyPI hive-py (0.0.7, 2021) is an unrelated Apache Hive package and is not
+  listed. github.com/hiveagentiq/hivetrust, the clone URL in the hivetrust README, is a 404 — the source lives under
+  github.com/srotzin. All version/date pairs were read from the registry metadata endpoints on 2026-09-19.
+packages:
+- language: python
+  name: hive-civilization-sdk
+  registry: pypi
+  official: true
+  url: https://pypi.org/project/hive-civilization-sdk/
+  install: pip install hive-civilization-sdk
+  repository: https://github.com/srotzin/hive-agent-sdk
+  homepage: https://thehiveryiq.com
+  version: 1.0.0
+  published: '2026-04-16'
+  license: MIT
+  author: Steve Rotzin
+  scope: 'Sovereign DID, W3C verifiable credentials, HAHS 1.0.0 legal contracts, and USDC settlement rails for AI agents (registry summary); README config points MCP hosts at https://hivegate.onrender.com/mcp'
+  note: 'Single release. The HiveTrust and HiveGate OpenAPIs it targets are at info.version 1.0.0 and the service repos were last pushed 2026-07-30, three and a half months after this release.'
+- language: javascript
+  name: hive-agent-sdk
+  registry: npm
+  official: true
+  url: https://www.npmjs.com/package/hive-agent-sdk
+  install: npm install hive-agent-sdk
+  repository: https://github.com/srotzin/hive-agent-sdk
+  version: null
+  published: null
+  note: 'Named in the hive-agent-sdk README ("npm install hive-agent-sdk"). registry.npmjs.org/hive-agent-sdk -> {"error":"Not found"} on 2026-09-19. Not installable from the registry; source only.'
+- language: javascript
+  name: '@hivetrust/sdk'
+  registry: npm
+  official: true
+  url: https://www.npmjs.com/package/@hivetrust/sdk
+  install: npm install @hivetrust/sdk
+  repository: https://github.com/srotzin/hivetrust
+  version: null
+  published: null
+  note: 'Named in the hivetrust README SDK section with a HiveTrustClient example against https://hivetrust.hiveagentiq.com and an ht_ API key. registry.npmjs.org/@hivetrust%2Fsdk -> Not found on 2026-09-19.'
+- language: python
+  name: hivetrust
+  registry: pypi
+  official: true
+  url: https://pypi.org/project/hivetrust/
+  install: pip install hivetrust
+  repository: https://github.com/srotzin/hivetrust
+  version: null
+  published: null
+  note: 'Named in the hivetrust README ("pip install hivetrust"). pypi.org/pypi/hivetrust/json -> 404 on 2026-09-19.'
+- language: javascript
+  name: hive-civilization-mcp
+  registry: npm
+  official: true
+  url: https://www.npmjs.com/package/hive-civilization-mcp
+  install: npx hive-civilization-mcp
+  repository: https://github.com/srotzin/hive-mcp-connector
+  version: null
+  published: null
+  note: 'A local stdio/HTTP MCP connector. The README itself says "Run with npx (once published)"; registry.npmjs.org -> Not found on 2026-09-19. Its documented hosted alternative is the remote endpoint https://hivegate.onrender.com/mcp (the origin behind hivegate.hiveagentiq.com).'
+- language: typescript
+  name: '@hive-protocol/sdk'
+  registry: npm
+  official: true
+  url: https://www.npmjs.com/package/@hive-protocol/sdk
+  install: npm install @hive-protocol/sdk
+  repository: https://github.com/srotzin/hive-protocol-sdk
+  version: null
+  published: null
+  note: 'Hive Civilization SDK (TypeScript) — HAHS, SpectralZK, SHOD, ViewKey. registry.npmjs.org -> Not found on 2026-09-19. Receipt-side SDK; see all/thehiveryiq-com for that surface.'
+- language: python
+  name: hive-protocol
+  registry: pypi
+  official: true
+  url: https://pypi.org/project/hive-protocol/
+  install: pip install hive-protocol
+  repository: https://github.com/srotzin/hive-py
+  version: null
+  published: null
+  note: 'pypi.org/pypi/hive-protocol/json -> 404 on 2026-09-19.'
+summary:
+  official_on_registry: 1
+  named_but_unpublished: 6
+  languages_on_registry: [python]

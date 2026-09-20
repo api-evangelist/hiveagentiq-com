@@ -1,0 +1,154 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Live GET probes on 2026-09-19 of the named /.well-known/* paths on every host this record knows — the registrable
+  domain and www, the four live API/MCP/A2A hosts, the HiveForge host named by robots.txt and hive-services.json, and
+  the Render origin the HiveTrust host CNAMEs to. Every row is a request that was issued; every status is the one
+  returned. A negative-control path that cannot exist was requested on each service host to tell served documents from
+  catch-alls.
+summary:
+  hosts_probed: 8
+  documents_served: 22
+  hit_count: 22
+  catch_all_hosts: [hivetrust.hiveagentiq.com, hivebank.hiveagentiq.com]
+  note: >-
+    Real documents: A2A agent cards at BOTH /.well-known/agent-card.json and /.well-known/agent.json on hivetrust,
+    hivegate, hivebank and hivelaw (byte-identical pairs except HiveGate, whose legacy agent.json is a different,
+    non-A2A document); ai-plugin.json on all four; MCP manifests (mcp.json) on hivetrust and hivegate; a DIF DID
+    Configuration and the CTEF test-vector fixture on hivetrust; service discovery documents (hivetrust.json,
+    hivegate.json, hivelaw.json, hive-services.json, agents.txt); hive-payments.json pricing on hivetrust, hivegate and
+    hivelaw; hive-pulse.json on hivebank and hivelaw. NOT served anywhere: security.txt (RFC 9116), openid-configuration,
+    oauth-authorization-server, oauth-protected-resource (RFC 9728 — checked on all three MCP hosts), api-catalog
+    (RFC 9727), apis.json. HiveTrust answers HTTP 200 with a JSON "not a real endpoint" body for every unknown path and
+    HiveBank answers 200 with an "unknown path" hint, so on those two hosts a 200 is NOT a document — the negative
+    control also 200s — and every such row below is marked served: false. The apex, www and hiveforge return
+    Cloudflare Error 1000 (HTTP 403, "DNS points to prohibited IP") for every path. The operator's genuine security.txt
+    is on thehiveryiq.com and belongs to all/thehiveryiq-com.
+hosts:
+- host: hiveagentiq.com
+  role: Registrable domain / declared Website — DOWN (Cloudflare Error 1000)
+  documents:
+  - {path: /.well-known/agent-card.json, status: 403, note: 'Cloudflare "DNS points to prohibited IP" HTML; not a provider response'}
+  - {path: /.well-known/agent.json, status: 403}
+  - {path: /.well-known/security.txt, status: 403}
+  - {path: /.well-known/openid-configuration, status: 403}
+  - {path: /.well-known/oauth-authorization-server, status: 403}
+  - {path: /.well-known/oauth-protected-resource, status: 403}
+  - {path: /.well-known/api-catalog, status: 403}
+  - {path: /.well-known/ai-plugin.json, status: 403}
+  - {path: /llms.txt, status: 403}
+  - {path: /robots.txt, status: 0, note: 'connection failed (curl exit, no HTTP status)'}
+- host: www.hiveagentiq.com
+  role: www alias — same Cloudflare Error 1000 for every path
+  documents:
+  - {path: /.well-known/agent-card.json, status: 403}
+  - {path: /.well-known/agent.json, status: 403}
+  - {path: /.well-known/security.txt, status: 403}
+  - {path: /.well-known/openid-configuration, status: 403}
+  - {path: /.well-known/oauth-authorization-server, status: 403}
+  - {path: /.well-known/oauth-protected-resource, status: 403}
+  - {path: /.well-known/api-catalog, status: 403}
+  - {path: /.well-known/ai-plugin.json, status: 403}
+- host: hivetrust.hiveagentiq.com
+  role: HiveTrust API + MCP server + A2A card host (CNAME hivetrust.onrender.com); CATCH-ALL — unknown paths return 200
+  documents:
+  - {path: /.well-known/agent-card.json, status: 200, content_type: application/json, bytes: 7803, file: ../a2a/hiveagentiq-com-agent-card.json, standard: 'A2A Agent Card (protocolVersion 0.3.0)', served: true}
+  - {path: /.well-known/agent.json, status: 200, content_type: application/json, bytes: 7803, note: 'Legacy path; byte-identical to agent-card.json (same ETag W/"1e7b-…")', served: true}
+  - {path: /.well-known/ai-plugin.json, status: 200, content_type: application/json, bytes: 2472, file: hiveagentiq-com-hivetrust-ai-plugin.json, standard: OpenAI plugin manifest v1, served: true}
+  - {path: /.well-known/did-configuration.json, status: 200, content_type: application/json, bytes: 1165, file: hiveagentiq-com-hivetrust-did-configuration.json, standard: DIF Well Known DID Configuration, served: true, note: 'proofValue is a placeholder string'}
+  - {path: /.well-known/hivetrust.json, status: 200, content_type: application/json, bytes: 7351, file: hiveagentiq-com-hivetrust-discovery.json, standard: provider service-discovery document, served: true}
+  - {path: /.well-known/mcp.json, status: 200, content_type: application/json, bytes: 701, file: hiveagentiq-com-hivetrust-mcp.json, standard: MCP server manifest (schema_version 2024-11-05), served: true}
+  - {path: /.well-known/hive-payments.json, status: 200, content_type: application/json, bytes: 711, file: hiveagentiq-com-hivetrust-hive-payments.json, standard: provider pricing document, served: true}
+  - {path: /.well-known/cte-test-vectors.json, status: 200, content_type: application/json, bytes: 12476, file: hiveagentiq-com-hivetrust-cte-test-vectors.json, standard: CTEF v0.3.1 fixture, served: true}
+  - {path: /.well-known/security.txt, status: 200, served: false, note: 'catch-all JSON: "this path is not a real endpoint" (581 B). Not RFC 9116.'}
+  - {path: /.well-known/openid-configuration, status: 200, served: false, note: catch-all body}
+  - {path: /.well-known/oauth-authorization-server, status: 200, served: false, note: catch-all body}
+  - {path: /.well-known/oauth-protected-resource, status: 200, served: false, note: 'catch-all body — this is the MCP resource host and no RFC 9728 metadata is served'}
+  - {path: /.well-known/api-catalog, status: 200, served: false, note: catch-all body}
+  - {path: /.well-known/apis.json, status: 200, served: false, note: catch-all body}
+  - {path: /.well-known/mcp/server-card.json, status: 200, served: false, note: catch-all body}
+  - {path: /llms.txt, status: 200, content_type: text/plain, bytes: 720, file: ../llms/hiveagentiq-com-hivetrust-llms.txt, served: true}
+  - {path: /openapi.json, status: 200, content_type: application/json, bytes: 3675, file: ../openapi/hiveagentiq-com-hivetrust-openapi.json, served: true}
+  - {path: /robots.txt, status: 200, content_type: text/plain, bytes: 429, served: true}
+  - {path: /sitemap.xml, status: 200, content_type: application/xml, bytes: 642, served: true}
+  - {path: /.well-known/apievangelist-negative-control-7f3a9c.json, status: 200, served: false, control: negative, note: 'A path that cannot exist returned the same catch-all body: this host echoes 200 for every /.well-known/* request.'}
+- host: hivetrust.onrender.com
+  role: Render origin behind hivetrust.hiveagentiq.com; the URL the a2aregistry.org listing pointed at
+  documents:
+  - {path: /.well-known/agent-card.json, status: 200, bytes: 7803, note: 'byte-identical to the hiveagentiq.com host (sha256 6f23edfe…)', served: true}
+  - {path: /.well-known/agent.json, status: 200, bytes: 7803, served: true}
+  - {path: /.well-known/security.txt, status: 200, served: false, note: catch-all body}
+  - {path: /.well-known/oauth-protected-resource, status: 200, served: false, note: catch-all body}
+- host: hivegate.hiveagentiq.com
+  role: HiveGate API + MCP server + live A2A JSON-RPC responder (CNAME hivegate.onrender.com); real 404s
+  documents:
+  - {path: /.well-known/agent-card.json, status: 200, content_type: application/json, bytes: 1946, file: ../a2a/hiveagentiq-com-hivegate-agent-card.json, standard: 'A2A Agent Card (protocolVersion 0.3.0)', served: true}
+  - {path: /.well-known/agent.json, status: 200, content_type: application/json, bytes: 733, file: ../a2a/hiveagentiq-com-hivegate-legacy-agent.json, served: true, note: 'A DIFFERENT document: name "hivegate", capabilities as an array, no protocolVersion/skills — a pre-A2A descriptor, graded flavored'}
+  - {path: /.well-known/ai-plugin.json, status: 200, content_type: application/json, bytes: 1748, file: hiveagentiq-com-hivegate-ai-plugin.json, served: true}
+  - {path: /.well-known/mcp.json, status: 200, content_type: application/json, bytes: 611, file: hiveagentiq-com-hivegate-mcp.json, standard: MCP server manifest, served: true}
+  - {path: /.well-known/hivegate.json, status: 200, content_type: application/json, bytes: 2058, file: hiveagentiq-com-hivegate-discovery.json, served: true}
+  - {path: /.well-known/hive-services.json, status: 200, content_type: application/json, bytes: 850, file: hiveagentiq-com-hivegate-hive-services.json, served: true, note: 'Names ten service hosts on hiveagentiq.com; hivememory, hivediscovery and hivemessenger have no DNS record'}
+  - {path: /.well-known/agents.txt, status: 200, content_type: text/plain, bytes: 1185, file: hiveagentiq-com-hivegate-agents.txt, standard: 'provider "ANP/0.1" discovery file', served: true}
+  - {path: /.well-known/hive-payments.json, status: 200, content_type: application/json, bytes: 2562, file: hiveagentiq-com-hivegate-hive-payments.json, served: true, note: 'Names a live Stripe publishable-key prefix; sanitized by the pipeline if it matched a secret pattern'}
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404, note: 'MCP resource host; no RFC 9728 metadata'}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/did-configuration.json, status: 404}
+  - {path: /llms.txt, status: 200, content_type: text/plain, bytes: 2599, file: ../llms/hiveagentiq-com-hivegate-llms.txt, served: true}
+  - {path: /openapi.json, status: 200, content_type: application/json, bytes: 2206, file: ../openapi/hiveagentiq-com-hivegate-openapi.json, served: true}
+  - {path: /robots.txt, status: 200, bytes: 249, served: true}
+  - {path: /sitemap.xml, status: 200, bytes: 1029, served: true}
+  - {path: /.well-known/apievangelist-negative-control-7f3a9c.json, status: 404, control: negative, note: 'Real JSON 404 envelope — this host does not catch-all, so its 200s are served documents.'}
+- host: hivebank.hiveagentiq.com
+  role: HiveBank API + MCP server + A2A card host (CNAME hivebank.onrender.com); CATCH-ALL hint bodies on unknown paths
+  documents:
+  - {path: /.well-known/agent-card.json, status: 200, content_type: application/json, bytes: 6097, file: ../a2a/hiveagentiq-com-hivebank-agent-card.json, standard: 'A2A Agent Card (protocolVersion 0.3.0)', served: true}
+  - {path: /.well-known/agent.json, status: 200, bytes: 6097, note: byte-identical to agent-card.json, served: true}
+  - {path: /.well-known/ai-plugin.json, status: 200, content_type: application/json, bytes: 2433, file: hiveagentiq-com-hivebank-ai-plugin.json, served: true}
+  - {path: /.well-known/hive-pulse.json, status: 200, content_type: application/json, bytes: 1671, file: hiveagentiq-com-hivebank-hive-pulse.json, served: true}
+  - {path: /.well-known/security.txt, status: 200, served: false, note: '"unknown path — but we kept the door open" hint body (1046 B)'}
+  - {path: /.well-known/openid-configuration, status: 200, served: false, note: hint body}
+  - {path: /.well-known/oauth-authorization-server, status: 200, served: false, note: hint body}
+  - {path: /.well-known/oauth-protected-resource, status: 200, served: false, note: 'hint body — MCP resource host, no RFC 9728 metadata'}
+  - {path: /.well-known/api-catalog, status: 200, served: false, note: hint body}
+  - {path: /.well-known/mcp.json, status: 200, served: false, note: hint body}
+  - {path: /.well-known/hive-payments.json, status: 200, served: false, note: hint body}
+  - {path: /llms.txt, status: 200, content_type: text/plain, bytes: 2744, file: ../llms/hiveagentiq-com-hivebank-llms.txt, served: true}
+  - {path: /openapi.json, status: 200, content_type: application/json, bytes: 2989, file: ../openapi/hiveagentiq-com-hivebank-openapi.json, served: true}
+  - {path: /robots.txt, status: 200, bytes: 701, served: true}
+  - {path: /.well-known/apievangelist-negative-control-7f3a9c.json, status: 200, served: false, control: negative, note: 'Same hint body for a path that cannot exist: catch-all.'}
+- host: hivelaw.hiveagentiq.com
+  role: HiveLaw API + A2A card host (CNAME hivelaw.onrender.com); real 404s
+  documents:
+  - {path: /.well-known/agent-card.json, status: 200, content_type: application/json, bytes: 4902, file: ../a2a/hiveagentiq-com-hivelaw-agent-card.json, standard: 'A2A Agent Card (protocolVersion 0.3.0)', served: true}
+  - {path: /.well-known/agent.json, status: 200, bytes: 4902, note: byte-identical to agent-card.json, served: true}
+  - {path: /.well-known/ai-plugin.json, status: 200, content_type: application/json, bytes: 2260, file: hiveagentiq-com-hivelaw-ai-plugin.json, served: true}
+  - {path: /.well-known/hivelaw.json, status: 200, content_type: application/json, bytes: 2134, file: hiveagentiq-com-hivelaw-discovery.json, served: true}
+  - {path: /.well-known/hive-payments.json, status: 200, content_type: application/json, bytes: 2149, file: hiveagentiq-com-hivelaw-hive-payments.json, served: true}
+  - {path: /.well-known/hive-pulse.json, status: 200, content_type: application/json, bytes: 512, file: hiveagentiq-com-hivelaw-hive-pulse.json, served: true}
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/mcp.json, status: 404}
+  - {path: /llms.txt, status: 404}
+  - {path: /openapi.json, status: 200, content_type: application/json, bytes: 2535, file: ../openapi/hiveagentiq-com-hivelaw-openapi.json, served: true}
+  - {path: /robots.txt, status: 200, bytes: 312, served: true}
+  - {path: /.well-known/apievangelist-negative-control-7f3a9c.json, status: 404, control: negative, note: 'Real 404 envelope listing every valid endpoint.'}
+- host: hiveforge.hiveagentiq.com
+  role: HiveForge (free DID minting) — named by robots.txt, hive-services.json and the 401 envelopes; DOWN (Cloudflare Error 1000)
+  documents:
+  - {path: /.well-known/agent-card.json, status: 403, note: 'Cloudflare Error 1000 for every path, including /health, /openapi.json and /llms.txt'}
+  - {path: /.well-known/agent.json, status: 403}
+  - {path: /.well-known/security.txt, status: 403}
+  - {path: /.well-known/oauth-protected-resource, status: 403}
+  - {path: /.well-known/hive-pulse.json, status: 403}
+hosts_named_but_unresolved:
+- {host: docs.hiveagentiq.com, named_by: 'hivetrust root platform.documentation', dns: none}
+- {host: hivememory.hiveagentiq.com, named_by: hive-services.json, dns: none}
+- {host: hivediscovery.hiveagentiq.com, named_by: hive-services.json, dns: none}
+- {host: hivemessenger.hiveagentiq.com, named_by: hive-services.json, dns: none}
+- {host: status.hiveagentiq.com, named_by: probe, dns: none}

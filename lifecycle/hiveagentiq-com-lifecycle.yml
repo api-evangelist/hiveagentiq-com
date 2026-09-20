@@ -1,0 +1,69 @@
+generated: '2026-09-19'
+method: searched
+source: https://hivetrust.hiveagentiq.com/
+derived_from:
+- openapi/hiveagentiq-com-hivetrust-openapi.json
+- openapi/hiveagentiq-com-hivegate-openapi.json
+- openapi/hiveagentiq-com-hivebank-openapi.json
+- openapi/hiveagentiq-com-hivelaw-openapi.json
+docs:
+- https://hivetrust.hiveagentiq.com/health
+- https://hivegate.hiveagentiq.com/llms.txt
+- https://github.com/srotzin/hivetrust
+versioning:
+  scheme: URL path prefix /v1 on every operation; document/service version 1.0.0
+  current_version: '1.0.0 (info.version in all four OpenAPIs, serverInfo.version on all three MCP servers, version on all four agent cards, X-Hive-Version: 1.0.0 response header on HiveTrust)'
+  policy_published: false
+  note: >-
+    A single major version across the estate with no published versioning policy, no changelog and no dated release
+    notes. The only dates the provider publishes are "Last updated: 2026-05-02" in the HiveGate and HiveBank llms.txt
+    files, the sitemap lastmod values (regenerated to the request date), the did-configuration validFrom (also stamped
+    at request time) and the GitHub push dates of the source repos (hivetrust and hivegate 2026-07-30). The HiveGate MCP
+    protocolVersion is 2024-11-05 while the SDK README targets streamable-http.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  documented_retirements: []
+  drift:
+  - what: HiveTrust REST paths documented in the source README (/v1/agents, /v1/agents/:id/score, /v1/insurance/*, /v1/disputes, /v1/webhooks, /v1/federation/*) are absent from the served OpenAPI, which documents a different set (/v1/trust/*, /v1/credential/*, /v1/identity/*).
+  - what: HiveTrust README routes /verify, /verify/self-test and /verify/pubkey answer the catch-all "not a real endpoint" 200 on the live host.
+  - what: hivetrust.json marks /v1/bond/tiers, /v1/bond/pool and /v1/liquidation/stats as free/public; they answer 401 live.
+  - what: HiveBank's OpenAPI (custody attestation + draws) and its root discovery document (vaults, streams, budgets, cashback) describe different surfaces on the same host.
+  note: No Deprecation pointer is emitted; nothing is marked deprecated and no policy exists.
+status_page:
+  url: null
+  probed:
+  - {url: 'https://status.hiveagentiq.com/', status: 'no DNS record'}
+  - {url: 'https://hiveagentiq.com/', status: 403, note: 'Cloudflare Error 1000 — DNS points to prohibited IP; the apex website itself is down'}
+  live_signals:
+  - {url: 'https://hivetrust.hiveagentiq.com/health', status: 200, observed: '{"status":"healthy","db":"ok",…,"uptime_seconds":4440378,"agents_registered":502}'}
+  - {url: 'https://hivegate.hiveagentiq.com/health', status: 200, observed: '{"status":"operational","service":"hivegate","version":"1.0.0"}'}
+  - {url: 'https://hivebank.hiveagentiq.com/health', status: 200, observed: '{"status":"healthy","service":"hivebank","version":"1.0.0"}'}
+  - {url: 'https://hivelaw.hiveagentiq.com/health', status: 200}
+  - {url: 'https://hiveforge.hiveagentiq.com/health', status: 403, note: 'Cloudflare Error 1000'}
+  note: >-
+    Per-service liveness endpoints only. HiveTrust's uptime_seconds (51 days at probe time) is a process counter, not
+    an availability history, and no incident page exists. The sibling brand's status page at thehiveryiq.com/status/
+    belongs to all/thehiveryiq-com and does not cover these hosts. No StatusPage pointer is emitted.
+sla:
+  published: true
+  source: https://hivetrust.hiveagentiq.com/
+  stated: '{"uptime_target":"99.9%","identity_lookup_latency":"< 100ms","settlement_finality":"< 30 seconds"}'
+  note: 'A target stated in HiveTrust''s root discovery JSON, with no remedy, credit or measurement behind it. The operator''s Terms (thehiveryiq.com/terms, "Verifier endpoint: 99.9% monthly uptime target", "Planned maintenance: Announced at least 72 hours in advance", "modify fees with 30 days written notice") are the sibling brand''s and are not scoped to these hosts.'
+changelog:
+  published: false
+  probed:
+  - {url: 'https://hiveagentiq.com/changelog', status: 403}
+  dated_signals:
+  - {date: '2026-05-02', what: 'llms.txt "Last updated" on hivegate and hivebank'}
+  - {date: '2026-04-16', what: 'hive-civilization-sdk 1.0.0 released on PyPI'}
+  - {date: '2026-04-25', what: 'CTEF v0.3.1 consortium freeze recorded in /.well-known/cte-test-vectors.json'}
+  - {date: '2026-07-30', what: 'last push to github.com/srotzin/hivetrust and /hivegate'}
+  - {date: '2026-09-04', what: 'last push in the srotzin account (hive-countersigner)'}
+  note: No changelog artifact is written; the signals above are the only change history found.
+support_lifetime:
+  stated_period: null
+  note: No support period or end-of-life statement is published for any of the services.

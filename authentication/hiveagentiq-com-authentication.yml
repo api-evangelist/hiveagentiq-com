@@ -1,0 +1,131 @@
+generated: '2026-09-19'
+method: searched
+source: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+derived_from:
+- openapi/hiveagentiq-com-hivetrust-openapi.json
+- openapi/hiveagentiq-com-hivegate-openapi.json
+- openapi/hiveagentiq-com-hivebank-openapi.json
+- openapi/hiveagentiq-com-hivelaw-openapi.json
+docs:
+- https://hivegate.hiveagentiq.com/llms.txt
+- https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+- https://hivetrust.hiveagentiq.com/.well-known/mcp.json
+- https://github.com/srotzin/hivetrust#api-reference
+- https://thehiveryiq.com/onboard.html
+summary:
+  types: [apiKey, http-bearer, payment, signature]
+  api_key_in: [header]
+  oauth2_flows: []
+  bearer: true
+  credential_classes: 5
+  headline: >-
+    None of the four OpenAPI documents declares a securityScheme (derive-authentication.py found nothing to derive), so
+    this profile is assembled from the discovery documents, llms.txt files, the MCP initialize instructions, the source
+    READMEs and the live 401/402 envelopes. The identity credential is a Hive DID (did:hive:*) issued free by POST
+    https://hivegate.hiveagentiq.com/v1/gate/onboard ("first DID is free, no payment required"), presented either as an
+    X-API-Key (ht_-prefixed per the README), as Authorization: Bearer did:hive:*, or as an X-Hive-DID header; HiveGate
+    guest sessions use Bearer hgate_* access tokens. Beyond identity, most operations are metered: an unauthenticated or
+    unpaid call gets an HTTP 402 with the USDC amount and rails, settled through x402 (USDC/USDT on Base) or the MPP
+    (Tempo) rail declared in every spec's x-mpp block. No OAuth 2.0, no OIDC, no RFC 9728 metadata on any host.
+schemes:
+- name: HiveDIDApiKey
+  type: apiKey
+  in: header
+  parameter: X-API-Key
+  description: >-
+    "Authentication via X-API-Key header" (hivetrust README); examples use ht_your_api_key. The key is issued with the
+    DID at onboarding ("returns a did:hive:* identifier + API key" — thehiveryiq.com/onboard.html; "DID issuance, API key
+    provisioning" — HiveGate ai-plugin.json). The MCP manifest states "tools_list: public, tools_call: X-API-Key or
+    Authorization: Bearer did:hive:* required".
+  issuance:
+    operation: POST https://hivegate.hiveagentiq.com/v1/gate/onboard
+    cost: free for the first DID; premium sovereign DID $4.99 (llms.txt) or $9.99 (402 envelope)
+    signup: agent_name + email in the request body (402 envelope quick_start)
+  sources:
+  - https://github.com/srotzin/hivetrust#api-reference
+  - https://hivetrust.hiveagentiq.com/.well-known/mcp.json
+  - https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+- name: HiveDIDBearer
+  type: http
+  scheme: bearer
+  bearer_format: did:hive:* (agent DID) or hgate_* (HiveGate guest access token)
+  description: >-
+    hivegate.json authentication.methods lists "Authorization: Bearer did:hive:*" and "Authorization: Bearer hgate_*";
+    the HiveTrust MCP server's initialize instructions say tools/call for write operations requires "a registered Hive
+    DID via X-API-Key or Authorization: Bearer did:hive:* header". The hgate_ token is returned by hivegate_register_guest
+    / POST /v1/gate/register-guest and is required by hivegate_execute (access_token, "Guest access token (hgate_*)").
+  sources:
+  - https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+  - mcp/hiveagentiq-com-hivegate-mcp-tools.json
+- name: HiveDIDHeader
+  type: apiKey
+  in: header
+  parameter: X-Hive-DID
+  aliases: [x-hive-did, x-did, X-HiveTrust-DID]
+  description: >-
+    The "sovereign handshake": "present X-Hive-DID header on non-free endpoints" (HiveGate llms.txt); the 402 envelope
+    lists headers_required ["X-Hive-DID"] and says "After checkout, include your issued did:hive: in the X-Hive-DID
+    header on every request". hivegate.json also names x-did and X-HiveTrust-DID. The same header claims the
+    first-call-free offer ("New here? Add header 'x-hive-did' to claim your first call free" — agent card bogo block).
+  sources:
+  - https://hivegate.hiveagentiq.com/llms.txt
+  - a2a/hiveagentiq-com-agent-card.json
+- name: x402Payment
+  type: payment
+  standard: x402 (HTTP 402)
+  in: header
+  parameter: X-Payment
+  description: >-
+    Every paid route answers 402. Observed on HiveGate: {"error":"payment_required","code":"HIVE_402", "detail":{"x402":
+    {"version":"1.0","amount_usdc":9.99,"payment_methods":["stripe-checkout","x402-usdc","x402-aleo"],"headers_required":
+    ["X-Hive-DID"]}}}. The HiveGate hive-payments.json names the header: "x402": {"supported": true, "header": "X-Payment",
+    "currency": "USDC", "network": "base"}. llms.txt: "Paid surfaces return a 402 with amount_min_usd — the floor price.
+    Submit any value >= that floor." Settlement rails: USDC/USDT on Base to treasury 0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E,
+    USDC on Solana, USDCx/USAD/ALEO on Aleo. The hivetrust ai-plugin.json declares auth.type "none" with a payment block —
+    payment, not a credential, is the gate.
+  observed:
+  - {url: 'https://hivegate.hiveagentiq.com/v1/gate/adapters', http_status: 402, code: HIVE_402}
+  - {url: 'https://hivegate.hiveagentiq.com/docs', http_status: 402, code: HIVE_402}
+  sources:
+  - well-known/hiveagentiq-com-hivegate-hive-payments.json
+  - https://hivegate.hiveagentiq.com/llms.txt
+- name: MPPPayment
+  type: payment
+  standard: MPP (Tempo rail) — declared in each spec's x-mpp extension
+  description: >-
+    All four OpenAPIs carry x-mpp: {realm, payment: {method: tempo, currency: 0x20c0…b50, decimals: 6, recipient}, rails:
+    [x402, mpp]} and per-operation x-mpp-charge {amount, intent: charge} in 6-decimal USDC units ($0.10 = "100000").
+    No MPP challenge was observed live; recorded from the contract only.
+  sources:
+  - openapi/hiveagentiq-com-hivetrust-openapi.json
+- name: HiveProvenanceHeaders
+  type: response-signature
+  standard: Ed25519 over a canonical request line ("smash.prov")
+  headers: [X-Hive-Prov-Iss, X-Hive-Prov-Ts, X-Hive-Prov-Sig, X-Hive-Prov-Pubkey, X-Hive-Prov-Payload]
+  description: >-
+    Not a client credential: every response from hivetrust, hivegate and hivebank carries an issuer DID (did:hive:hivetrust,
+    did:hive:hivegate, did:hive:hivebank), a timestamp, a base64url Ed25519 signature and a pointer to the public key at
+    /v1/prov/pubkey ("every door 200s, every byte signed"). Observed on 2026-09-19 on GET / and POST /mcp responses.
+  pubkeys:
+  - {issuer: 'did:hive:hivetrust', url: 'https://hivetrust.hiveagentiq.com/v1/prov/pubkey', algorithm: Ed25519}
+  - {issuer: 'did:hive:hivegate', url: 'https://hivegate.hiveagentiq.com/v1/prov/pubkey', algorithm: Ed25519}
+unauthenticated_envelope:
+  hivetrust_and_hivebank:
+    http_status: 401
+    body: '{"status":"unregistered_agent","error":"agent_not_registered","message":"Welcome to Hive Civilization — register your agent DID to unlock 21 services across 12 layers.","onboard":{"url":"https://hivegate.hiveagentiq.com/v1/gate/onboard", ...}, "recruitment": {...}}'
+    observed_on: ['GET /v1/agents', 'GET /v1/webhooks', 'GET /v1/bond/tiers', 'GET /v1/bond/pool', 'GET /v1/liquidation/stats', 'GET /v1/reputation/status/{did}', 'GET /v1/bank/stats']
+  hivegate:
+    http_status: 402
+    body: '{"error":"payment_required","code":"HIVE_402", ...}'
+    observed_on: ['GET /v1/gate/adapters', 'GET /v1/gate/stats', 'GET /v1/gate/directory', 'GET /v1/mcp/tools', 'GET /docs']
+public_operations:
+  note: >-
+    Free without any credential, observed 200 on 2026-09-19: hivetrust GET /health, /v1/stats, /v1/pricing/status,
+    /v1/oracle/streams, /v1/trust/lookup/{did}, /v1/prov/pubkey, /openapi.json, /llms.txt, /.well-known/*; hivegate
+    GET /health, /v1/gate/queue/stats, /v1/gate/sample, /openapi.json, /llms.txt, /.well-known/*; hivelaw GET /health,
+    /v1/jurisdictions, /v1/case-law/stats, /v1/mcp/tools; hivebank GET /health, /openapi.json, /llms.txt. MCP initialize
+    and tools/list answer anonymously on hivetrust, hivegate and hivebank.
+discovery:
+  oauth_authorization_server: 'hivetrust 200 but a catch-all JSON "not a real endpoint" body; hivegate 404; hivelaw 404; hivebank 200 catch-all hint body'
+  oauth_protected_resource: same pattern — no RFC 9728 metadata on any host
+  openid_configuration: same pattern — no OIDC

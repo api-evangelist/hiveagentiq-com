@@ -1,0 +1,89 @@
+generated: '2026-09-19'
+method: derived
+source: openapi/hiveagentiq-com-hivetrust-openapi.json
+derived_from:
+- openapi/hiveagentiq-com-hivetrust-openapi.json
+- openapi/hiveagentiq-com-hivegate-openapi.json
+- openapi/hiveagentiq-com-hivebank-openapi.json
+- openapi/hiveagentiq-com-hivelaw-openapi.json
+observed:
+- https://hivetrust.hiveagentiq.com/v1/agents
+- https://hivegate.hiveagentiq.com/v1/gate/adapters
+- https://hivegate.hiveagentiq.com/.well-known/did-configuration.json
+- https://hivelaw.hiveagentiq.com/llms.txt
+- https://hivetrust.hiveagentiq.com/.well-known/security.txt
+format: proprietary
+rfc9457: false
+summary: >-
+  The four contracts declare exactly one error response each, "402 Payment required — x402 or MPP", with no schema.
+  The live services use at least four different error envelopes, none of them application/problem+json: a 401
+  "unregistered_agent" recruitment envelope (HiveTrust, HiveBank), a 402 "HIVE_402" payment envelope (HiveGate), a 404
+  "not_found" envelope with recovery_actions (HiveGate) and a 404 {"success":false,"error":"Not Found"} listing every
+  valid endpoint (HiveLaw). Two hosts also answer HTTP 200 for paths that do not exist — HiveTrust with a "not a real
+  endpoint" JSON body and HiveBank with an "unknown path" hint — so on those hosts a 200 is not proof the route exists
+  and an agent must read the body. Every envelope carries a "recruitment" block with onboarding links and brand
+  metadata.
+problem_types:
+- code: 'HTTP 402 (contract)'
+  status: 402
+  title: Payment required — x402 or MPP
+  detail: Declared on every metered operation in all four OpenAPIs; no response schema.
+  operations: 24
+  remediation: Retry the same request with an x402 payment (X-Payment header, USDC on Base) or MPP settlement for at least the amount in the 402 body.
+  source: openapi x-mpp-charge + responses.402
+- code: 'HIVE_402 / payment_required'
+  status: 402
+  title: This endpoint requires a Hive DID and payment. First DID is free.
+  envelope: '{"error":"payment_required","code":"HIVE_402","service":"HiveGate","message":…,"detail":{"error":"sovereign_handshake_required","x402":{"version":"1.0","amount_usdc":9.99,"payment_url":"https://hiveagentiq.com/did","payment_methods":["stripe-checkout","x402-usdc","x402-aleo"],"headers_required":["X-Hive-DID"]}},"onboard_url":…,"quick_start":{…},"recruitment":{"version":"0.1.0","status":402,…}}'
+  observed_on: ['GET /v1/gate/adapters', 'GET /v1/gate/stats', 'GET /v1/gate/directory', 'GET /v1/mcp/tools', 'GET /docs', 'GET /openapi.yaml', 'GET /swagger.json']
+  host: hivegate.hiveagentiq.com
+  remediation: Onboard at POST /v1/gate/onboard (free first DID), then resend with X-Hive-DID; pay the quoted USDC when the route is metered.
+  note: 'The 402 is also HiveGate''s answer for UNKNOWN paths such as /docs and /swagger.json, so it doubles as a soft 404 on that host; the real 404 envelope (below) is returned for /.well-known/* misses.'
+- code: agent_not_registered
+  status: 401
+  title: Credentials required
+  envelope: '{"status":"unregistered_agent","error":"agent_not_registered","message":"Welcome to Hive Civilization — register your agent DID to unlock 21 services across 12 layers.","onboard":{"url":"https://hivegate.hiveagentiq.com/v1/gate/onboard","free_tier":"First DID free via HiveForge — 60 seconds to register","forge_url":…,"docs":…},"platform":{…,"compliance":["HIPAA","SOC2","GDPR"]},"referral":{…},"http_status":401,"recruitment":{"version":"0.1.0","status":401,"title":"Credentials required","summary":"This endpoint requires an authenticated agent identity.","next_step":"Register an agent at the onboarding URL, then resubmit with credentials.",…}}'
+  observed_on: ['hivetrust GET /v1/agents', 'GET /v1/webhooks', 'GET /v1/bond/tiers', 'GET /v1/bond/pool', 'GET /v1/liquidation/stats', 'GET /v1/reputation/status/{did}', 'GET /v1/register', 'GET /v1/agents/register', 'GET /v1/gate/performance-index.json', 'hivebank GET /v1/bank/stats']
+  hosts: [hivetrust.hiveagentiq.com, hivebank.hiveagentiq.com]
+  remediation: 'Present X-API-Key, Authorization: Bearer did:hive:* or X-Hive-DID after onboarding.'
+  note: 'hivetrust.json marks /v1/bond/tiers, /v1/bond/pool and /v1/liquidation/stats as FREE / public, but they answered 401 without a DID on 2026-09-19.'
+- code: not_found
+  status: 404
+  title: Endpoint not found
+  envelope: '{"error_id":"err_…","error":"not_found","message":"Endpoint not found. See /.well-known/hivegate.json for available endpoints.","available_endpoints":…,"support_endpoint":…,"recovery_actions":["Verify the resource ID is correct","List available endpoints: GET /.well-known/hivegate.json","Check guest directory: GET /v1/gate/directory"],"recruitment":{"status":404,…}}'
+  observed_on: ['GET /.well-known/security.txt', 'GET /.well-known/openid-configuration', 'GET /.well-known/oauth-authorization-server', 'GET /.well-known/oauth-protected-resource', 'GET /.well-known/api-catalog', 'GET /.well-known/did-configuration.json', 'negative-control path']
+  host: hivegate.hiveagentiq.com
+  remediation: Consult /.well-known/hivegate.json for the endpoint catalogue; error_id can be quoted to support.
+- code: 'Not Found (HiveLaw)'
+  status: 404
+  title: "<METHOD> <path> is not a valid HiveLaw endpoint."
+  envelope: '{"success":false,"error":"Not Found","message":"GET /llms.txt is not a valid HiveLaw endpoint.","available_endpoints":{"health":"GET /health","contracts_create":"POST /v1/contracts/create",… 36 entries},"recruitment":{…}}'
+  observed_on: ['GET /llms.txt', 'POST /mcp', 'GET /.well-known/security.txt', 'GET /.well-known/mcp.json', 'negative-control path']
+  host: hivelaw.hiveagentiq.com
+  note: 'A real 404 that also serves as the host''s endpoint catalogue; POST /mcp is not a route on HiveLaw (tools are at GET /v1/mcp/tools + POST /v1/mcp/call).'
+- code: 'not-a-real-endpoint (HiveTrust soft 200)'
+  status: 200
+  title: 'No closed doors — but this path is not a real endpoint. Follow the breadcrumbs.'
+  envelope: '{"service":"hivetrust","message":"No closed doors — but this path is not a real endpoint. Follow the breadcrumbs.","requested":"/openapi.yaml","discover":{"llms_txt":…,"health":…,"agent_card":…,"openapi":…,"prov_pubkey":…,"onboard":"https://thehiveryiq.com"},"doctrine":"slippery-sticky: every door 200s, body always points home"}'
+  observed_on: ['GET /openapi.yaml', '/swagger.json', '/api-docs', '/docs', '/redoc', 'GET /mcp', '/verify', '/verify/self-test', '/.well-known/security.txt', '/.well-known/openid-configuration', '/.well-known/oauth-authorization-server', '/.well-known/oauth-protected-resource', '/.well-known/api-catalog', '/.well-known/apis.json', '/.well-known/mcp/server-card.json', 'negative-control path']
+  host: hivetrust.hiveagentiq.com
+  agent_guidance: 'Treat any HiveTrust 200 whose body has "requested" and "doctrine" keys as a 404. Status codes on this host do not distinguish served documents from misses; the body does.'
+- code: 'unknown-path hint (HiveBank soft 200)'
+  status: 200
+  title: 'unknown path — but we kept the door open'
+  envelope: '{"hint":"unknown path — but we kept the door open","you_asked_for":"/.well-known/security.txt","try":["/llms.txt","/openapi.json","/health","/","/.well-known/agent.json"],"onboard":…,"service":"HiveBank","docs":…,"_hive":{…},"_concierge":{…}}'
+  observed_on: ['GET /.well-known/security.txt', '/.well-known/oauth-*', '/.well-known/openid-configuration', '/.well-known/api-catalog', '/.well-known/mcp.json', '/.well-known/hive-payments.json', 'negative-control path']
+  host: hivebank.hiveagentiq.com
+  agent_guidance: 'Same rule as HiveTrust: a body with a "hint" and "you_asked_for" key is a miss.'
+- code: 'JSON-RPC -32601'
+  status: 200
+  title: Method not found
+  envelope: '{"jsonrpc":"2.0","id":3,"error":{"code":-32601,"message":"Method not found","data":"Method ''resources/list'' not found"},"recruitment":{…}}'
+  observed_on: ['POST /mcp resources/list', 'POST /mcp prompts/list (hivetrust)', 'POST / and /a2a tasks/get']
+  hosts: [hivetrust.hiveagentiq.com, hivegate.hiveagentiq.com, hivebank.hiveagentiq.com]
+infrastructure_errors:
+- code: 'Cloudflare Error 1000'
+  status: 403
+  title: 'DNS points to prohibited IP'
+  hosts: [hiveagentiq.com, www.hiveagentiq.com, hiveforge.hiveagentiq.com]
+  note: 'Not a provider error envelope: Cloudflare''s own HTML (and, for POST, an RFC 9457-shaped JSON with error_code 1000, "retryable": false, "owner_action_required": true). The apex website and the HiveForge service were unreachable throughout the 2026-09-19 pass.'

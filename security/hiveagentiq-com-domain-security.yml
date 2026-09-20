@@ -1,0 +1,37 @@
+generated: '2026-09-19'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: hiveagentiq.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 29 07:50:07 2026 GMT
+  hsts: null
+- host: hivebank.onrender.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 22 21:54:17 2026 GMT
+  hsts: null
+- host: hivegate.hiveagentiq.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 12 12:46:32 2026 GMT
+  hsts: false
+domains:
+- domain: hiveagentiq.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: false
+- domain: onrender.com
+  dnssec: false
+  caa:
+  - 0 iodef "mailto:security+caafailure@render.com"
+  - 0 issue "digicert.com"
+  - 0 issue "letsencrypt.org"
+  - 0 issue "pki.goog; cansignhttpexchanges=yes"
+  - 0 issuewild "digicert.com"
+  - 0 issuewild "letsencrypt.org"
+  spf: false
+  dmarc: true
+  dmarc_policy: none

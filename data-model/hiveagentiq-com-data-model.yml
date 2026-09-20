@@ -1,0 +1,109 @@
+generated: '2026-09-19'
+method: derived
+source: mcp/hiveagentiq-com-hivetrust-mcp-tools.json
+derived_from:
+- mcp/hiveagentiq-com-hivetrust-mcp-tools.json
+- mcp/hiveagentiq-com-hivegate-mcp-tools.json
+- mcp/hiveagentiq-com-hivebank-mcp-tools.json
+- mcp/hiveagentiq-com-hivelaw-mcp-tools.json
+- openapi/hiveagentiq-com-hivetrust-openapi.json
+- well-known/hiveagentiq-com-hivetrust-discovery.json
+- a2a/hiveagentiq-com-agent-card.json
+note: >-
+  The four OpenAPIs declare no components and no schemas, so this graph is derived from the MCP inputSchemas (the only
+  typed contract the provider publishes), the path parameters, and the identifier fields the discovery documents name.
+  Identifier formats are as stated by the provider: agent DIDs did:hive:<uuid> or did:key:z6Mk…, guest DIDs
+  did:hive:guest:*, service DIDs did:hive:<service>, guest tokens hgate_*, API keys ht_*.
+entities:
+- name: Agent
+  ids: 'agent_id (UUID), did (did:hive:* | did:key:*)'
+  fields: 'name, description, public_key, public_key_format (ed25519-base58 | ed25519-hex | jwk), checksum (SHA-256 of prompt+tools+model config), owner_id, owner_type (organization | individual | dao), model_provider, model_name, model_version, capabilities[], verticals[], delegation_scope[], eu_ai_act_class (minimal_risk | limited_risk | high_risk | unacceptable_risk), hiveagent_id, metadata, mode (tourist | citizen), genesis_rank, genesis_tier (founder | citizen | tourist), trust_tier'
+  source: hivetrust_register_agent inputSchema; agent card citizen_mode / genesis_program; /v1/trust/lookup response
+- name: TrustScore
+  ids: 'did'
+  fields: 'trust_score (0-1000 composite), trust_tier, pillars (identity, behavior, fidelity, compliance …), recommendation, decay, reputation lock-in'
+  source: hivetrust_get_trust_score; GET /v1/trust/score/{did}; hivetrust.json reputation block
+- name: RiskVerdict
+  fields: 'verdict (ALLOW | REVIEW | BLOCK), trust_tier, max_transaction_limit'
+  source: hivetrust_verify_agent_risk
+- name: Credential
+  ids: 'credential_id'
+  fields: 'credential_type, issuer_id, claims, expires_at, revoked, reason, evidence, scope (narrow | freeze | unfreeze | revoke)'
+  source: hivetrust_issue_credential / verify / revoke; POST /v1/credential/scope
+- name: TelemetryEvent
+  fields: 'events[] (transaction completions, SLA violations, disputes …)'
+  source: hivetrust_ingest_telemetry
+- name: InsuranceQuote
+  fields: 'agent_id, counterparty_id, transaction_value, premium_usdc'
+  source: hivetrust_get_insurance_quote
+- name: InsurancePolicy
+  ids: 'policy_id'
+  fields: 'agent_id, transaction_value, quote_details, escrow contract (Base L2)'
+  source: hivetrust_bind_insurance
+- name: Claim
+  fields: 'policy_id, claimant_id, claim_type (non_delivery | fraud | sla_breach | data_loss | unauthorized_action), amount, description, evidence'
+  source: hivetrust_file_claim; README claim_type namespace note
+- name: Dispute
+  fields: 'agent_id, dispute_type, target_type, target_id, reason, evidence'
+  source: hivetrust_file_dispute; HiveLaw disputes (file / appeal)
+- name: ContextLease
+  ids: 'lease_id'
+  fields: 'lessee_did, data_stream (construction_pricing | compliance_feeds | market_data | pheromone_signals | simpson_catalog), duration_hours (24 | 72 | 168), price_usdc'
+  source: hivetrust_create_lease; GET /v1/oracle/streams
+- name: Bond
+  fields: 'agent_did, amount_usdc, tier (bronze | silver | gold | platinum), lock_period_days, slash_count, max_bounty_access'
+  source: hivetrust_stake_bond / verify_bond; hivetrust.json bond.tiers
+- name: LiquidationListing
+  ids: 'listing_id'
+  fields: 'did, valuation, sale price, 15% platform fee'
+  source: hivetrust.json liquidation block
+- name: GuestRegistration
+  ids: 'guest_did (did:hive:guest:*), access_token (hgate_*)'
+  fields: 'external_id, source_platform (langchain | crewai | autogen | openai | anthropic | a2a | custom), agent_name, capabilities[], native_reputation, callback_url, trust mapping'
+  source: hivegate_register_guest / bridge_trust / execute
+- name: Vault
+  ids: 'vault_id'
+  fields: 'owner_did, vault_name, balance, yield, protocol allocation (Aave | Morpho | Spark | Compound), shares'
+  source: hivebank_create_vault / deposit / get_balance; HiveBank root discovery
+- name: PaymentStream
+  fields: 'from_did, to_did, total_usdc, duration_seconds'
+  source: hivebank_create_stream
+- name: ComplianceAudit
+  ids: 'stampId'
+  fields: 'agent_did, output_text, output_type, liability score (0-100), risk tier, compliance flags'
+  source: hivelaw_audit_output / verify_stamp / agent_history
+- name: Jurisdiction
+  ids: 'code (US-CA, US-NY, EU, UK, SG …)'
+  fields: 'name, type, parent, supported, max_automated_damages_usdc, ai_liability_framework'
+  source: GET https://hivelaw.hiveagentiq.com/v1/jurisdictions (observed)
+- name: ServiceIdentity
+  ids: 'did:hive:hivetrust | did:hive:hivegate | did:hive:hivebank'
+  fields: 'Ed25519 pubkey (/v1/prov/pubkey), X-Hive-Prov-* response signature'
+  source: response headers
+relationships:
+- {from: Agent, to: TrustScore, type: has_one, via: did}
+- {from: Agent, to: RiskVerdict, type: has_one, via: agent_id}
+- {from: Agent, to: Credential, type: has_many, via: agent_id}
+- {from: Credential, to: Agent, type: belongs_to, via: issuer_id (issuing agent/org)}
+- {from: Agent, to: TelemetryEvent, type: has_many, via: agent_id}
+- {from: Agent, to: InsuranceQuote, type: has_many, via: agent_id + counterparty_id}
+- {from: InsuranceQuote, to: InsurancePolicy, type: has_one, via: quote_details}
+- {from: InsurancePolicy, to: Claim, type: has_many, via: policy_id}
+- {from: Agent, to: Dispute, type: has_many, via: agent_id (filer) / target_id}
+- {from: Agent, to: ContextLease, type: has_many, via: lessee_did}
+- {from: Agent, to: Bond, type: has_one, via: agent_did}
+- {from: Agent, to: LiquidationListing, type: has_many, via: did}
+- {from: GuestRegistration, to: Agent, type: belongs_to, via: guest_did -> did (bridged trust)}
+- {from: Agent, to: Vault, type: has_many, via: owner_did}
+- {from: Vault, to: PaymentStream, type: has_many, via: from_did / to_did}
+- {from: Agent, to: ComplianceAudit, type: has_many, via: agent_did}
+- {from: ComplianceAudit, to: Jurisdiction, type: belongs_to, via: jurisdiction code}
+- {from: ServiceIdentity, to: Credential, type: has_many, via: issuer (service-issued VCs, e.g. HiveLaw HiveCapabilityCredential)}
+id_prefixes:
+- {prefix: 'did:hive:', entity: Agent / ServiceIdentity}
+- {prefix: 'did:hive:guest:', entity: GuestRegistration}
+- {prefix: 'did:key:z6Mk', entity: Agent (W3C did:key)}
+- {prefix: 'hgate_', entity: GuestRegistration.access_token}
+- {prefix: 'ht_', entity: API key (README)}
+- {prefix: 'req_', entity: request id (X-Request-Id)}
+- {prefix: 'err_', entity: HiveGate error id}

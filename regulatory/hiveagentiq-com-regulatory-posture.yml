@@ -1,0 +1,56 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: https://hivetrust.hiveagentiq.com/
+signals: {}
+probed_absent:
+- signal: subprocessors
+  urls:
+  - {url: 'https://hiveagentiq.com/legal/subprocessors', status: 403}
+  - {url: 'https://www.hiveagentiq.com/privacy', status: 403}
+  note: 'Every hiveagentiq.com apex path returns the Cloudflare "Error 1000: DNS points to prohibited IP" page. The operator''s privacy policy naming Render, Cloudflare and Supabase lives on thehiveryiq.com and is recorded in all/thehiveryiq-com.'
+- signal: data_subject_request
+  urls:
+  - {url: 'https://www.hiveagentiq.com/privacy', status: 403}
+  - {url: 'https://hiveagentiq.com/privacy/requests', status: 403}
+  note: 'hivetrust.json legal.privacy_policy and HiveGate ai-plugin legal_info_url both point at www.hiveagentiq.com pages that 403.'
+- signal: ai_transparency
+  urls:
+  - {url: 'https://hiveagentiq.com/ai/transparency', status: 403}
+  note: 'The agent card says "EU AI Act Article 12 (logging) + Article 13 (transparency) ready" and hivetrust_register_agent takes an eu_ai_act_class enum (minimal_risk … unacceptable_risk). Those are product features and marketing copy, not a published transparency statement, so no signal is recorded.'
+- signal: accessibility_conformance
+  urls:
+  - {url: 'https://hiveagentiq.com/accessibility', status: 403}
+  - {url: 'https://hiveagentiq.com/accessibility/vpat', status: 403}
+  note: All surfaces on this domain are JSON APIs; no web UI exists to conform.
+- signal: sbom
+  urls:
+  - {url: 'https://hiveagentiq.com/security/sbom', status: 403}
+  note: Never derived — search only. The service source is public (github.com/srotzin/hivetrust, MIT) but publishes no SBOM.
+- signal: support_lifetime
+  note: No support period stated; see lifecycle/hiveagentiq-com-lifecycle.yml.
+- signal: data_residency
+  urls:
+  - {url: 'https://hiveagentiq.com/docs/data-residency', status: 403}
+  note: 'DNS shows every service on Render (x-render-origin-server) behind Cloudflare; no residency statement is published for these hosts.'
+- signal: incident_notification
+  urls:
+  - {url: 'https://hiveagentiq.com/legal/dpa', status: 403}
+- signal: global_privacy_control
+  note: No statement found; not tested by header, per the contract rule.
+- signal: age_assurance
+  note: Not applicable to a machine-only API surface; no statement found.
+- signal: notice_and_action
+  urls:
+  - {url: 'https://hiveagentiq.com/legal/report-content', status: 403}
+- signal: transparency_report
+  urls:
+  - {url: 'https://hiveagentiq.com/transparency', status: 403}
+- signal: training_data_summary
+  note: 'HiveLaw''s "AI contract review" and "hallucination audit" tools imply model use; no training-data summary is published.'
+- signal: exit_assistance
+  note: 'The only portability statement found is in the sibling brand''s Terms ("request an export of your account data within 90 days of termination"), scoped to thehiveryiq.com.'
+note: >-
+  An empty signals map is the finding. The company publishes machine discovery documents in abundance but no legal,
+  privacy, accessibility or security-policy page on this domain: the apex website is down (Cloudflare Error 1000 on
+  2026-09-19) and the service hosts point their legal links either at those dead apex pages or at the sibling brand.

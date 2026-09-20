@@ -1,0 +1,239 @@
+generated: '2026-09-19'
+method: derived
+source: mcp/hiveagentiq-com-hivetrust-mcp-tools.json, mcp/hiveagentiq-com-hivegate-mcp-tools.json, mcp/hiveagentiq-com-hivebank-mcp-tools.json, mcp/hiveagentiq-com-hivelaw-mcp-tools.json (live tools/list, 2026-09-19) and the four A2A cards, bound to openapi/hiveagentiq-com-*-openapi.json
+surfaces:
+  openapi:
+  - {file: openapi/hiveagentiq-com-hivetrust-openapi.json, url: 'https://hivetrust.hiveagentiq.com/openapi.json', operations: 8, gated: false}
+  - {file: openapi/hiveagentiq-com-hivegate-openapi.json, url: 'https://hivegate.hiveagentiq.com/openapi.json', operations: 5, gated: false}
+  - {file: openapi/hiveagentiq-com-hivebank-openapi.json, url: 'https://hivebank.hiveagentiq.com/openapi.json', operations: 5, gated: false}
+  - {file: openapi/hiveagentiq-com-hivelaw-openapi.json, url: 'https://hivelaw.hiveagentiq.com/openapi.json', operations: 6, gated: false}
+  note: >-
+    None of the 24 operations carries an operationId, so REST bindings below are by method + path.
+    overlays/hiveagentiq-com-*-overlay.yaml propose operationIds. The specs are thin projections: the discovery documents
+    (hivetrust.json, hivegate.json, hivelaw.json, the HiveBank root) and the READMEs name roughly 150 more routes that the
+    tools actually correspond to, and those are recorded as the binding where the spec has none — marked binding:
+    discovery-doc rather than rest.
+  mcp:
+  - {url: 'https://hivetrust.hiveagentiq.com/mcp', gated: false, tools: 17, note: 'anonymous tools/list; tools/call for writes needs a DID; paid tools need x402'}
+  - {url: 'https://hivegate.hiveagentiq.com/mcp', gated: false, tools: 4}
+  - {url: 'https://hivebank.hiveagentiq.com/mcp', gated: false, tools: 5}
+  - {url: 'https://hivelaw.hiveagentiq.com/v1/mcp/tools', gated: false, tools: 4, note: 'REST listing; POST /v1/mcp/call is paid; no JSON-RPC endpoint'}
+  graphql: null
+  a2a:
+  - {url: 'https://hivetrust.hiveagentiq.com', card: a2a/hiveagentiq-com-agent-card.json, skills: 5, responder: false}
+  - {url: 'https://hivegate.hiveagentiq.com', card: a2a/hiveagentiq-com-hivegate-agent-card.json, skills: 3, responder: true}
+  - {url: 'https://hivebank.onrender.com', card: a2a/hiveagentiq-com-hivebank-agent-card.json, skills: 6, responder: 'x402 402 on POST'}
+  - {url: 'https://hivelaw.onrender.com', card: a2a/hiveagentiq-com-hivelaw-agent-card.json, skills: 3, responder: untested}
+crosswalk:
+- tool: hivetrust_get_trust_score
+  surface: mcp
+  category: trust
+  rest: ['GET /v1/trust/score/{did}']
+  binding: rest
+  confidence: high
+  note: 'Same read ("Trust score lookup … $0.10 USDC per call"); the spec says 0-100 while the tool and cards say 0-1000. GET /v1/trust/lookup/{did} (undeclared, free, observed 200) is the unpaid cousin.'
+- tool: hivetrust_verify_agent_risk
+  surface: mcp
+  category: trust
+  rest: ['GET /v1/trust/score/{did}']
+  binding: rest
+  confidence: medium
+  note: 'README route GET /v1/verify_agent_risk is not in the served spec; the trust-score read is the closest declared operation.'
+- tool: hivetrust_issue_credential
+  surface: mcp
+  category: credentials
+  rest: ['POST /v1/credential/issue', 'POST /v1/trust/vc/issue']
+  binding: rest
+  confidence: medium
+  note: 'The spec has two issuance routes (HiveCredential scoped credential $0.10; VC issuance $0.50); the tool''s credential_type + claims shape matches the VC route, the card fee schedule maps credential_issue to POST /v1/agents/:id/credentials.'
+- tool: hivetrust_verify_credential
+  surface: mcp
+  category: credentials
+  rest: ['POST /v1/credential/verify']
+  binding: rest
+  confidence: high
+- tool: hivetrust_revoke_credential
+  surface: mcp
+  category: credentials
+  rest: ['POST /v1/credential/scope']
+  binding: rest
+  confidence: medium
+  note: 'Spec summary: "mutate scope (narrow/freeze/unfreeze/revoke)". The card fee schedule names DELETE /v1/agents/:id/credentials/:cid.'
+- tool: hivetrust_register_agent
+  surface: mcp
+  category: identity
+  rest: ['POST /v1/trust/did/generate']
+  binding: rest
+  confidence: medium
+  note: 'DID issuance ($1.00) is the declared write; the tool''s richer inputSchema (public_key, model_provider, eu_ai_act_class, …) matches README POST /v1/agents, which is undeclared.'
+- tool: hivetrust_get_agent
+  surface: mcp
+  category: identity
+  rest: ['GET /v1/identity/{did}/passport']
+  binding: rest
+  confidence: medium
+  note: 'Identity passport ($0.25) vs README GET /v1/agents/:id (free). Bound to the declared read.'
+- tool: hivetrust_verify_identity
+  surface: mcp
+  category: identity
+  rest: ['GET /v1/identity/{did}/passport']
+  binding: rest
+  confidence: low
+- tool: hivetrust_create_lease
+  surface: mcp
+  category: data-oracle
+  rest: []
+  binding: discovery-doc
+  discovery: 'POST /v1/oracle/create-lease (hivetrust.json oracle.endpoints; agent card fee_schedule oracle_lease)'
+  confidence: high
+- tool: hivetrust_stake_bond
+  surface: mcp
+  category: bonds
+  rest: []
+  binding: discovery-doc
+  discovery: 'POST /v1/bond/stake (hivetrust.json bond.endpoints, $0.25 flat fee)'
+  confidence: high
+- tool: hivetrust_verify_bond
+  surface: mcp
+  category: bonds
+  rest: []
+  binding: discovery-doc
+  discovery: 'GET /v1/bond/verify/:did (hivetrust.json, FREE)'
+  confidence: high
+- tool: hivetrust_get_platform_stats
+  surface: mcp
+  category: system
+  rest: []
+  binding: discovery-doc
+  discovery: 'GET /v1/stats (README; observed 200 live: agents.total 502)'
+  confidence: high
+- tool: hivegate_register_guest
+  surface: mcp
+  category: onboarding
+  rest: ['POST /v1/gate/register-guest']
+  binding: rest
+  confidence: high
+  note: 'Guest registration $4.99 in both the spec and hivegate.json.'
+- tool: hivegate_translate_intent
+  surface: mcp
+  category: interop
+  rest: []
+  binding: discovery-doc
+  discovery: 'POST /v1/gate/translate-intent (llms.txt $0.02; hivegate.json)'
+  confidence: high
+- tool: hivegate_bridge_trust
+  surface: mcp
+  category: interop
+  rest: []
+  binding: discovery-doc
+  discovery: 'POST /v1/gate/bridge-trust (llms.txt $0.10; hivegate.json)'
+  confidence: high
+- tool: hivegate_execute
+  surface: mcp
+  category: interop
+  rest: []
+  binding: discovery-doc
+  discovery: 'POST /v1/gate/execute (hivegate.json; 0.5% bridge fee, min $0.01)'
+  confidence: high
+- tool: agent-onboarding
+  surface: a2a
+  category: onboarding
+  rest: ['POST /v1/gate/onboard']
+  binding: rest
+  confidence: high
+  note: HiveGate card skill; the free first-DID onboarding.
+- tool: framework-bridge
+  surface: a2a
+  category: interop
+  rest: []
+  binding: mcp
+  mcp: [hivegate_translate_intent, hivegate_execute]
+  confidence: medium
+- tool: trust-bridging
+  surface: a2a
+  category: interop
+  rest: []
+  binding: mcp
+  mcp: [hivegate_bridge_trust]
+  confidence: high
+  note: 'Card skill description states the 0.5% bridge fee.'
+- tool: identity-verification
+  surface: a2a
+  category: identity
+  rest: ['POST /v1/trust/did/generate', 'POST /v1/trust/vc/issue']
+  binding: rest
+  confidence: medium
+  note: HiveTrust card skill.
+- tool: trust-scoring
+  surface: a2a
+  category: trust
+  rest: ['GET /v1/trust/score/{did}', 'GET /v1/trust/reputation/proof']
+  binding: rest
+  confidence: high
+- tool: bond-management
+  surface: a2a
+  category: bonds
+  rest: []
+  binding: mcp
+  mcp: [hivetrust_stake_bond, hivetrust_verify_bond]
+  confidence: high
+- tool: data-oracle
+  surface: a2a
+  category: data-oracle
+  rest: []
+  binding: mcp
+  mcp: [hivetrust_create_lease]
+  confidence: high
+- tool: delegation
+  surface: a2a
+  category: delegation
+  rest: []
+  binding: discovery-doc
+  discovery: 'https://hivetrust.hiveagentiq.com/v1/delegation (hivetrust.json endpoints.delegation; no operations enumerated)'
+  confidence: low
+mcp_only:
+- {tool: hivetrust_ingest_telemetry, reason: 'README POST /v1/telemetry/ingest; not in the served spec'}
+- {tool: hivetrust_get_insurance_quote, reason: 'README POST /v1/insurance/quote; not in the served spec'}
+- {tool: hivetrust_bind_insurance, reason: 'README POST /v1/insurance/bind; not in the served spec'}
+- {tool: hivetrust_file_claim, reason: 'README POST /v1/insurance/claims; not in the served spec'}
+- {tool: hivetrust_file_dispute, reason: 'README POST /v1/disputes; not in the served spec'}
+- {tool: hivebank_create_vault, reason: 'HiveBank root discovery names POST /v1/bank/vault/create; the served spec covers only custody attestation and draws'}
+- {tool: hivebank_deposit, reason: 'POST /v1/bank/vault/deposit (root discovery); not in the spec'}
+- {tool: hivebank_create_stream, reason: 'POST /v1/bank/stream/open (llms.txt); not in the spec'}
+- {tool: hivebank_get_balance, reason: 'GET /v1/bank/vault/{did} (root discovery); not in the spec'}
+- {tool: hivebank_get_stats, reason: 'GET /v1/bank/vault/stats (root discovery); GET /v1/bank/stats answered 401 live'}
+- {tool: hivelaw_audit_output, reason: 'POST /v1/compliance/audit-output (hivelaw.json); the spec covers contract draft/review/seal and compliance tiers only'}
+- {tool: hivelaw_verify_stamp, reason: 'GET /v1/compliance/verify-stamp/:stampId (hivelaw.json); not in the spec'}
+- {tool: hivelaw_agent_history, reason: 'GET /v1/compliance/agent-history/:did (hivelaw.json); not in the spec'}
+- {tool: hivelaw_readiness_check, reason: 'No REST route named for it in any document'}
+rest_only:
+- {operation: 'GET /v1/trust/reputation/proof', note: 'Signed portable reputation proof; no tool'}
+- {operation: 'POST /v1/gate/admit', note: 'Admission check; no tool'}
+- {operation: 'GET /v1/gate/tier/verify'}
+- {operation: 'POST /v1/gate/tier/upgrade'}
+- {operation: 'POST /v1/gate/onboard', note: 'Bound to the A2A skill agent-onboarding; no MCP tool (hivegate_register_guest is the paid guest path)'}
+- {operation: 'POST /v1/bank/custody/attest'}
+- {operation: 'POST /v1/bank/custody/policy'}
+- {operation: 'POST /v1/bank/draw/instant'}
+- {operation: 'POST /v1/bank/draw/schedule'}
+- {operation: 'POST /v1/bank/draw/credit'}
+- {operation: 'POST /v1/law/contract/draft'}
+- {operation: 'POST /v1/law/contract/review'}
+- {operation: 'POST /v1/law/contract/seal'}
+- {operation: 'POST /v1/comply/start'}
+- {operation: 'POST /v1/comply/start/pro'}
+- {operation: 'POST /v1/comply/start/enterprise'}
+coverage:
+  mcp_tools: 30
+  mcp_tools_bound_to_spec_operation: 10
+  mcp_tools_bound_to_discovery_doc_only: 6
+  mcp_only: 14
+  a2a_skills: 17
+  a2a_skills_bound: 8
+  rest_operations: 24
+  rest_operations_with_tool_or_skill: 8
+  rest_only: 16
+  note: >-
+    The three surfaces are overlapping projections of a much larger route set that no single document describes. The
+    served OpenAPIs are the narrowest; the MCP tool lists carry the only real input schemas; the discovery JSON documents
+    carry the widest route inventory and the prices.

@@ -64,5 +64,11 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Hive Agent IQ is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry) and added to the network as a stub for full-pipeline profiling.
-- https://hiveagentiq.com/
+Hive Agent IQ (hiveagentiq.com) is the agent-platform brand of Hive Civilization (sibling brand thehiveryiq.com, profiled in `all/thehiveryiq-com`). It runs a federation of agent-facing services on its own subdomains — HiveTrust (KYA identity, DIDs, verifiable credentials, trust scoring), HiveGate (onboarding and framework bridging), HiveBank (treasury) and HiveLaw (contracts and compliance) — each with an OpenAPI 3.0.3 stub, an A2A 0.3.0 agent card, an ai-plugin.json manifest and, on three of the four, a remote MCP server; calls are metered in USDC through x402 on Base.
+
+- Website: https://hiveagentiq.com/ (returned Cloudflare Error 1000 for every path on 2026-09-19)
+- HiveTrust: https://hivetrust.hiveagentiq.com — OpenAPI, MCP (17 tools), agent card, DID configuration
+- HiveGate: https://hivegate.hiveagentiq.com — OpenAPI, MCP (4 tools), agent card, live A2A JSON-RPC responder
+- HiveBank: https://hivebank.hiveagentiq.com — OpenAPI, MCP (5 tools), agent card
+- HiveLaw: https://hivelaw.hiveagentiq.com — OpenAPI, agent card, REST-listed tools
+- Source: https://github.com/srotzin

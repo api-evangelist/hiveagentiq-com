@@ -1,0 +1,114 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for HiveTrust — KYA Identity & Trust API
+  version: '2026-09-19'
+  x-generated: '2026-09-19'
+  x-method: generated
+  x-source: openapi/hiveagentiq-com-hivetrust-openapi.json
+  x-note: Adds operationIds (the provider declares none), a tag per service, per-operation USDC prices decoded from
+    x-mpp-charge, the observed 401 envelope, an auth note and, for HiveBank/HiveLaw, the first-party host as an
+    additional server. Never mutates the original file.
+extends: https://hivetrust.hiveagentiq.com/openapi.json
+x-extends-local: openapi/hiveagentiq-com-hivetrust-openapi.json
+actions:
+- target: $.tags
+  update:
+  - name: Trust
+    description: HiveTrust — KYA Identity & Trust API operations (tag added by API Evangelist; the provider declares
+      none).
+- target: $.info
+  update:
+    x-apievangelist-provider: Hive Agent IQ (hiveagentiq.com); sibling brand Hive Civilization (thehiveryiq.com)
+      is the spec contact
+    x-apievangelist-auth-note: No securitySchemes are declared. Writes require a Hive DID from POST https://hivegate.hiveagentiq.com/v1/gate/onboard;
+      metered operations answer 402 and settle via x402 (X-Payment, USDC on Base) or MPP. See authentication/hiveagentiq-com-authentication.yml.
+    x-apievangelist-rate-limit: X-RateLimit-Limit 100 per hour with X-RateLimit-Remaining / X-RateLimit-Reset (epoch
+      ms) on hivetrust and hivelaw; none observed on hivegate and hivebank.
+- target: $.paths['/v1/trust/score/{did}'].get
+  update:
+    operationId: getTrustScore
+    tags:
+    - Trust
+    x-apievangelist-price-usdc: 0.1
+- target: $.paths['/v1/trust/score/{did}'].get.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/trust/did/generate'].post
+  update:
+    operationId: generateDid
+    tags:
+    - Trust
+    x-apievangelist-price-usdc: 1.0
+- target: $.paths['/v1/trust/did/generate'].post.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/trust/vc/issue'].post
+  update:
+    operationId: issueVerifiableCredential
+    tags:
+    - Trust
+    x-apievangelist-price-usdc: 0.5
+- target: $.paths['/v1/trust/vc/issue'].post.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/identity/{did}/passport'].get
+  update:
+    operationId: getIdentityPassport
+    tags:
+    - Trust
+    x-apievangelist-price-usdc: 0.25
+- target: $.paths['/v1/identity/{did}/passport'].get.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/trust/reputation/proof'].get
+  update:
+    operationId: getReputationProof
+    tags:
+    - Trust
+    x-apievangelist-price-usdc: 0.1
+- target: $.paths['/v1/trust/reputation/proof'].get.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/credential/issue'].post
+  update:
+    operationId: issueCredential
+    tags:
+    - Trust
+    x-apievangelist-price-usdc: 0.1
+- target: $.paths['/v1/credential/issue'].post.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/credential/verify'].post
+  update:
+    operationId: verifyCredential
+    tags:
+    - Trust
+    x-apievangelist-price-usdc: 0.01
+- target: $.paths['/v1/credential/verify'].post.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'
+- target: $.paths['/v1/credential/scope'].post
+  update:
+    operationId: mutateCredentialScope
+    tags:
+    - Trust
+    x-apievangelist-price-usdc: 0.05
+- target: $.paths['/v1/credential/scope'].post.responses
+  update:
+    '401':
+      description: 'agent_not_registered — no Hive DID presented (X-API-Key, Authorization: Bearer did:hive:* or
+        X-Hive-DID). Observed live on this estate; not declared by the provider.'

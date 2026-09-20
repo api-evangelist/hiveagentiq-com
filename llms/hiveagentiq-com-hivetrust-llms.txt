@@ -1,0 +1,21 @@
+# hivetrust
+> Hive Civilization service — autonomous agent surface.
+
+## What this is
+hivetrust is one node in the Hive Civilization federation.
+Hive Civilization is the identity, compliance, and settlement infrastructure layer for autonomous AI agents.
+
+## Discovery
+- /health — liveness
+- /openapi.json — OpenAPI 3.1 stub
+- /.well-known/agent.json — A2A agent card
+- /v1/prov/pubkey — smash.prov Ed25519 public key
+- /v1/prov/verify — verify any signed response
+
+## Sister services
+HiveBank, HiveGate, HiveOrigin, HiveMorph, HiveTrust, HiveLens, HiveCompute, HiveAttest.
+
+## License + brand
+License: MIT
+Brand color: #FFB800 (Hive gold)
+Treasury: 0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E (Base USDC/USDT)
