@@ -23,7 +23,7 @@ created: '2026-09-19'
 modified: '2026-09-19'
 tags:
 - Agents
-- Agent Commerce
+- Agentic Commerce
 - A2A
 - MCP
 - x402
@@ -49,6 +49,7 @@ tags_raw:
 - Compliance
 - Agent-native
 - United States
+- Agent Commerce
 apis:
 - aid: hiveagentiq-com:hivetrust-kya-identity-trust-api
   name: HiveTrust KYA Identity & Trust API
@@ -184,6 +185,11 @@ apis:
   humanURL: https://hivebank.hiveagentiq.com/llms.txt
   baseURL: https://hivebank.hiveagentiq.com
   tags:
+  - Stablecoins
+  - Agentic Commerce
+  - MCP
+  - x402
+  tags_raw:
   - Stablecoins
   - Agent Commerce
   - MCP
