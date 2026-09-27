@@ -1,0 +1,84 @@
+openapi: 3.2.0
+info:
+  title: HiveLaw — AI Legal Contracts & Compliance Comply API
+  version: 1.0.0
+  description: Stream B compliance tiers and legal contract services. USDC on Tempo/Base. Accepts x402 and MPP rails.
+  contact:
+    name: Hive Civilization
+    url: https://thehiveryiq.com
+    email: steve@thehiveryiq.com
+servers:
+- url: https://hivelaw.onrender.com
+tags:
+- name: Comply
+paths:
+  /v1/comply/start:
+    post:
+      summary: Start Starter compliance tier
+      description: Activate Starter compliance tier. $500.00 USDC.
+      x-mpp-charge:
+        amount: '500000000'
+        intent: charge
+      responses:
+        '200':
+          description: Tier activated
+        '402':
+          description: Payment required
+      tags:
+      - Comply
+      operationId: postV1ComplyStart
+      x-operation-id-source: derived
+  /v1/comply/start/pro:
+    post:
+      summary: Start Pro compliance tier
+      description: Activate Pro compliance tier. $1500.00 USDC.
+      x-mpp-charge:
+        amount: '1500000000'
+        intent: charge
+      responses:
+        '200':
+          description: Pro tier activated
+        '402':
+          description: Payment required
+      tags:
+      - Comply
+      operationId: postV1ComplyStartPro
+      x-operation-id-source: derived
+  /v1/comply/start/enterprise:
+    post:
+      summary: Start Enterprise compliance tier
+      description: Activate Enterprise compliance tier. $2500.00 USDC.
+      x-mpp-charge:
+        amount: '2500000000'
+        intent: charge
+      responses:
+        '200':
+          description: Enterprise tier activated
+        '402':
+          description: Payment required
+      tags:
+      - Comply
+      operationId: postV1ComplyStartEnterprise
+      x-operation-id-source: derived
+x-mpp:
+  realm: hivelaw.onrender.com
+  payment:
+    method: tempo
+    currency: '0x20c000000000000000000000b9537d11c60e8b50'
+    decimals: 6
+    recipient: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'
+  rails:
+  - x402
+  - mpp
+  categories:
+  - compliance
+  - legal
+  integration: first-party
+  tags:
+  - law
+  - contracts
+  - compliance
+  - legal
+  - disputes
+  - stream-b
+  treasury: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'

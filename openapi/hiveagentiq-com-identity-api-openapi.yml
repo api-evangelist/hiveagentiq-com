@@ -1,0 +1,62 @@
+openapi: 3.2.0
+info:
+  title: HiveTrust — KYA & Trust Identity API
+  version: 1.0.0
+  description: DID-federated trust score, Spectral receipts, and identity passport for MPP-paying agents. Accepts x402 and MPP rails.
+  contact:
+    name: Hive Civilization
+    url: https://thehiveryiq.com
+    email: steve@thehiveryiq.com
+servers:
+- url: https://hivetrust.hiveagentiq.com
+tags:
+- name: Identity
+paths:
+  /v1/identity/{did}/passport:
+    get:
+      summary: Identity passport
+      description: Signed identity passport aggregate. $0.25 USDC.
+      x-mpp-charge:
+        amount: '250000'
+        intent: charge
+      parameters:
+      - name: did
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Identity passport
+        '402':
+          description: Payment required
+      tags:
+      - Identity
+      operationId: getV1IdentityByDidPassport
+      x-operation-id-source: derived
+x-mpp:
+  realm: hivetrust.hiveagentiq.com
+  payment:
+    method: tempo
+    currency: '0x20c000000000000000000000b9537d11c60e8b50'
+    decimals: 6
+    recipient: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'
+  rails:
+  - x402
+  - mpp
+  categories:
+  - identity
+  - trust
+  integration: first-party
+  tags:
+  - did
+  - trust-score
+  - identity-passport
+  - verifiable-credentials
+  - spectral-receipts
+  - kya
+  - agent-kyc
+  - hive-credential
+  - scope-enforcement
+  - authenticatable
+  treasury: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'

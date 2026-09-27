@@ -1,0 +1,118 @@
+openapi: 3.2.0
+info:
+  title: HiveBank — Treasury Attestation & Settlement Bank API
+  version: 1.0.0
+  description: Stream D custody & settlement attestation. USDC on Base mainnet (chain_id 8453). Accepts x402 and MPP rails.
+  contact:
+    name: Hive Civilization
+    url: https://thehiveryiq.com
+    email: steve@thehiveryiq.com
+servers:
+- url: https://hivebank.onrender.com
+tags:
+- name: Bank
+paths:
+  /v1/bank/custody/attest:
+    post:
+      summary: Custody attestation
+      description: Policy attestation for agent custody arrangement. $0.25 USDC.
+      x-mpp-charge:
+        amount: '250000'
+        intent: charge
+      responses:
+        '200':
+          description: Attestation issued
+        '402':
+          description: Payment required — x402 or MPP
+      tags:
+      - Bank
+      operationId: postV1BankCustodyAttest
+      x-operation-id-source: derived
+  /v1/bank/custody/policy:
+    post:
+      summary: Treasury policy attestation
+      description: Treasury policy signed attestation. $0.25 USDC.
+      x-mpp-charge:
+        amount: '250000'
+        intent: charge
+      responses:
+        '200':
+          description: Policy issued
+        '402':
+          description: Payment required
+      tags:
+      - Bank
+      operationId: postV1BankCustodyPolicy
+      x-operation-id-source: derived
+  /v1/bank/draw/instant:
+    post:
+      summary: Instant draw
+      description: Instant credit draw request. $1.00 USDC.
+      x-mpp-charge:
+        amount: '1000000'
+        intent: charge
+      responses:
+        '200':
+          description: Draw confirmed
+        '402':
+          description: Payment required
+      tags:
+      - Bank
+      operationId: postV1BankDrawInstant
+      x-operation-id-source: derived
+  /v1/bank/draw/schedule:
+    post:
+      summary: Scheduled draw
+      description: Schedule a future draw. $1.00 USDC.
+      x-mpp-charge:
+        amount: '1000000'
+        intent: charge
+      responses:
+        '200':
+          description: Schedule confirmed
+        '402':
+          description: Payment required
+      tags:
+      - Bank
+      operationId: postV1BankDrawSchedule
+      x-operation-id-source: derived
+  /v1/bank/draw/credit:
+    post:
+      summary: Credit line draw
+      description: Draw on credit line. $1.00 USDC.
+      x-mpp-charge:
+        amount: '1000000'
+        intent: charge
+      responses:
+        '200':
+          description: Draw confirmed
+        '402':
+          description: Payment required
+      tags:
+      - Bank
+      operationId: postV1BankDrawCredit
+      x-operation-id-source: derived
+x-mpp:
+  realm: hivebank.onrender.com
+  payment:
+    method: usdc-base
+    currency: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+    decimals: 6
+    network: base
+    chain_id: 8453
+    recipient: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'
+  rails:
+  - x402
+  - mpp
+  categories:
+  - settlement
+  - custody
+  integration: first-party
+  tags:
+  - bank
+  - custody
+  - settlement
+  - treasury
+  - draw
+  - stream-d
+  treasury: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'

@@ -1,0 +1,84 @@
+openapi: 3.2.0
+info:
+  title: HiveLaw — AI Legal Contracts & Compliance Law API
+  version: 1.0.0
+  description: Stream B compliance tiers and legal contract services. USDC on Tempo/Base. Accepts x402 and MPP rails.
+  contact:
+    name: Hive Civilization
+    url: https://thehiveryiq.com
+    email: steve@thehiveryiq.com
+servers:
+- url: https://hivelaw.onrender.com
+tags:
+- name: Law
+paths:
+  /v1/law/contract/draft:
+    post:
+      summary: Draft legal contract
+      description: AI-generated contract draft. $0.50 USDC.
+      x-mpp-charge:
+        amount: '500000'
+        intent: charge
+      responses:
+        '200':
+          description: Contract drafted
+        '402':
+          description: Payment required — x402 or MPP
+      tags:
+      - Law
+      operationId: postV1LawContractDraft
+      x-operation-id-source: derived
+  /v1/law/contract/review:
+    post:
+      summary: AI contract review
+      description: Legal risk review of a contract. $0.50 USDC.
+      x-mpp-charge:
+        amount: '500000'
+        intent: charge
+      responses:
+        '200':
+          description: Review complete
+        '402':
+          description: Payment required
+      tags:
+      - Law
+      operationId: postV1LawContractReview
+      x-operation-id-source: derived
+  /v1/law/contract/seal:
+    post:
+      summary: Seal contract on-chain
+      description: Spectral-sign and record contract. $0.50 USDC.
+      x-mpp-charge:
+        amount: '500000'
+        intent: charge
+      responses:
+        '200':
+          description: Contract sealed
+        '402':
+          description: Payment required
+      tags:
+      - Law
+      operationId: postV1LawContractSeal
+      x-operation-id-source: derived
+x-mpp:
+  realm: hivelaw.onrender.com
+  payment:
+    method: tempo
+    currency: '0x20c000000000000000000000b9537d11c60e8b50'
+    decimals: 6
+    recipient: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'
+  rails:
+  - x402
+  - mpp
+  categories:
+  - compliance
+  - legal
+  integration: first-party
+  tags:
+  - law
+  - contracts
+  - compliance
+  - legal
+  - disputes
+  - stream-b
+  treasury: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'

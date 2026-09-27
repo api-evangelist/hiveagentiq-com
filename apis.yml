@@ -18,6 +18,23 @@ x-type: company
 x-source: harvest:a2a-registry
 x-tier: profiled
 x-tier-reason: enrichment pass 2026-09-19 (local-v3; was a2a-registry harvest stub)
+deliveryModel:
+  model: saas
+  license_evidence:
+    not_product:
+    - srotzin/hivebank
+    - srotzin/hivegate
+    - srotzin/hivetrust
+  open_source: unknown
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: low
+  source:
+  - pricing
+  - repository-not-product
+  generated: '2026-09-25'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
@@ -33,7 +50,7 @@ tags:
 - Stablecoins
 - Insurance
 - Compliance
-- agent-native
+- Agent-Native
 - United States
 tags_raw:
 - Agents
@@ -50,56 +67,32 @@ tags_raw:
 - Agent-native
 - United States
 - Agent Commerce
+- agent-native
 apis:
-- aid: hiveagentiq-com:hivetrust-kya-identity-trust-api
-  name: HiveTrust KYA Identity & Trust API
-  description: >-
-    Identity and trust substrate for AI agents on hivetrust.hiveagentiq.com: DID issuance ($1.00 USDC), W3C VC and
-    scoped HiveCredential issue/verify/scope ($0.01-$0.50), trust-score lookup ($0.10; a free unauthenticated
-    /v1/trust/lookup/{did} also answers), identity passport and reputation proof, plus data-oracle leases, USDC bonds,
-    insurance, disputes and an agent liquidation market documented in the /.well-known/hivetrust.json discovery
-    document. The served OpenAPI 3.0.3 is an 8-operation stub (no schemas, no operationIds, no securitySchemes) with an
-    x-mpp payment extension; authentication is a Hive DID (X-API-Key, Bearer did:hive:* or X-Hive-DID) plus x402 or
-    MPP payment per call. Every response carries X-RateLimit-* (100/hour) and Ed25519 provenance headers. The host
-    answers HTTP 200 with a "not a real endpoint" JSON body for unknown paths.
+- aid: hiveagentiq-com:hiveagentiq-com-bank-api
+  name: Hive Agent IQ Bank API
+  description: The Bank API from Hive Agent IQ — 5 operation(s) for bank.
   humanURL: https://github.com/srotzin/hivetrust#api-reference
   baseURL: https://hivetrust.hiveagentiq.com
   tags:
-  - Decentralized Identity
-  - Verifiable Credentials
-  - Trust Scoring
-  - Insurance
-  - x402
+  - Bank
   properties:
   - type: OpenAPI
-    url: openapi/hiveagentiq-com-hivetrust-openapi.json
-  - type: OpenAPI
-    name: Provider-hosted OpenAPI 3.0.3
-    url: https://hivetrust.hiveagentiq.com/openapi.json
+    url: openapi/hiveagentiq-com-bank-api-openapi.yml
   - type: Documentation
-    name: API reference (source README)
     url: https://github.com/srotzin/hivetrust#api-reference
   - type: APIReference
-    name: Service discovery document
     url: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
   - type: LLMsTxt
     url: llms/hiveagentiq-com-hivetrust-llms.txt
   - type: LLMsTxt
     url: https://hivetrust.hiveagentiq.com/llms.txt
-  - type: MCPServer
-    url: mcp/hiveagentiq-com-mcp.yml
-  - type: MCPServer
-    name: HiveTrust MCP endpoint (Streamable HTTP, 17 tools)
-    url: https://hivetrust.hiveagentiq.com/mcp
   - type: ToolCrosswalk
     url: mcp/hiveagentiq-com-tool-crosswalk.yml
   - type: AgentCard
     url: a2a/hiveagentiq-com-a2a.yml
   - type: AgentCard
-    name: A2A Agent Card (provider-hosted)
     url: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
-  - type: Overlay
-    url: overlays/hiveagentiq-com-hivetrust-overlay.yaml
   - type: Authentication
     url: authentication/hiveagentiq-com-authentication.yml
   - type: ErrorCatalog
@@ -110,165 +103,438 @@ apis:
     url: asyncapi/hiveagentiq-com-webhooks.yml
   - type: DataModel
     url: data-model/hiveagentiq-com-data-model.yml
-  - type: AgentSkill
-    url: skills/_index.yml
   - type: SourceCode
     url: https://github.com/srotzin/hivetrust
-- aid: hiveagentiq-com:hivegate-admission-identity-api
-  name: HiveGate Admission, Identity & Pricing Tier API
-  description: >-
-    Onboarding gateway for the Hive network on hivegate.hiveagentiq.com: POST /v1/gate/onboard mints the first
-    did:hive DID and API key free, guest registration ($4.99) bridges agents from LangChain, CrewAI, AutoGen, OpenAI,
-    Anthropic and A2A with an hgate_* token, and admission, tier verification and upgrades are metered at $0.10-$1.00.
-    A 5-operation OpenAPI 3.0.3 stub sits beside a 25-route discovery document (/.well-known/hivegate.json), a real
-    llms.txt guide, and a remote MCP server (serverInfo "hive-civilization", 4 tools) that the provider's SDK config
-    names as its canonical MCP endpoint. The host root is also a live A2A JSON-RPC responder. Unauthenticated metered
-    calls return a 402 HIVE_402 envelope with the USDC amount and rails; unknown /.well-known paths return a real 404.
-  humanURL: https://hivegate.hiveagentiq.com/llms.txt
-  baseURL: https://hivegate.hiveagentiq.com
-  tags:
-  - Agents
-  - Decentralized Identity
-  - A2A
-  - MCP
-  - x402
-  properties:
-  - type: OpenAPI
-    url: openapi/hiveagentiq-com-hivegate-openapi.json
-  - type: OpenAPI
-    name: Provider-hosted OpenAPI 3.0.3
-    url: https://hivegate.hiveagentiq.com/openapi.json
   - type: Documentation
     url: https://hivegate.hiveagentiq.com/llms.txt
   - type: APIReference
-    name: Service discovery document
     url: https://hivegate.hiveagentiq.com/.well-known/hivegate.json
   - type: GettingStarted
-    name: Onboarding page (operator's sibling brand site, named by every Hive service)
     url: https://thehiveryiq.com/onboard.html
   - type: LLMsTxt
     url: llms/hiveagentiq-com-hivegate-llms.txt
   - type: LLMsTxt
     url: https://hivegate.hiveagentiq.com/llms.txt
-  - type: MCPServer
-    url: mcp/hiveagentiq-com-mcp.yml
-  - type: MCPServer
-    name: HiveGate MCP endpoint (Streamable HTTP, 4 tools)
-    url: https://hivegate.hiveagentiq.com/mcp
-  - type: ToolCrosswalk
-    url: mcp/hiveagentiq-com-tool-crosswalk.yml
   - type: AgentCard
-    url: a2a/hiveagentiq-com-a2a.yml
-  - type: AgentCard
-    name: A2A Agent Card (provider-hosted; url is a live JSON-RPC responder)
     url: https://hivegate.hiveagentiq.com/.well-known/agent-card.json
-  - type: Overlay
-    url: overlays/hiveagentiq-com-hivegate-overlay.yaml
-  - type: Authentication
-    url: authentication/hiveagentiq-com-authentication.yml
-  - type: ErrorCatalog
-    url: errors/hiveagentiq-com-problem-types.yml
-  - type: AgentSkill
-    url: skills/_index.yml
   - type: SourceCode
     url: https://github.com/srotzin/hivegate
-- aid: hiveagentiq-com:hivebank-treasury-api
-  name: HiveBank Treasury Attestation & Settlement API
-  description: >-
-    Agent treasury layer on hivebank.hiveagentiq.com: the served OpenAPI 3.0.3 covers custody and treasury-policy
-    attestation ($0.25) and instant, scheduled and credit-line draws ($1.00), while the root discovery document and
-    llms.txt describe USDC vaults, yield routing (Aave, Morpho, Spark, Compound on Base), payment streams, budgets and
-    cashback that the 5-tool remote MCP server exposes. The provider states it never custodies funds. Any POST to the
-    host without payment returns a real x402 v1 PaymentRequirements payload ($0.01, Base USDC, EIP-3009). The OpenAPI
-    and agent card still name the hivebank.onrender.com origin the first-party host CNAMEs to; unknown paths answer a
-    200 "unknown path" hint body.
-  humanURL: https://hivebank.hiveagentiq.com/llms.txt
-  baseURL: https://hivebank.hiveagentiq.com
-  tags:
-  - Stablecoins
-  - Agentic Commerce
-  - MCP
-  - x402
-  tags_raw:
-  - Stablecoins
-  - Agent Commerce
-  - MCP
-  - x402
-  properties:
-  - type: OpenAPI
-    url: openapi/hiveagentiq-com-hivebank-openapi.json
-  - type: OpenAPI
-    name: Provider-hosted OpenAPI 3.0.3
-    url: https://hivebank.hiveagentiq.com/openapi.json
   - type: Documentation
     url: https://hivebank.hiveagentiq.com/llms.txt
   - type: LLMsTxt
     url: llms/hiveagentiq-com-hivebank-llms.txt
   - type: LLMsTxt
     url: https://hivebank.hiveagentiq.com/llms.txt
-  - type: MCPServer
-    url: mcp/hiveagentiq-com-mcp.yml
-  - type: MCPServer
-    name: HiveBank MCP endpoint (Streamable HTTP, 5 tools)
-    url: https://hivebank.hiveagentiq.com/mcp
+  - type: AgentCard
+    url: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivebank
+  - type: APIReference
+    url: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
+  - type: AgentCard
+    url: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
+- aid: hiveagentiq-com:hiveagentiq-com-comply-api
+  name: Hive Agent IQ Comply API
+  description: The Comply API from Hive Agent IQ — 3 operation(s) for comply.
+  humanURL: https://github.com/srotzin/hivetrust#api-reference
+  baseURL: https://hivetrust.hiveagentiq.com
+  tags:
+  - Comply
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-comply-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/srotzin/hivetrust#api-reference
+  - type: APIReference
+    url: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivetrust-llms.txt
+  - type: LLMsTxt
+    url: https://hivetrust.hiveagentiq.com/llms.txt
   - type: ToolCrosswalk
     url: mcp/hiveagentiq-com-tool-crosswalk.yml
   - type: AgentCard
     url: a2a/hiveagentiq-com-a2a.yml
   - type: AgentCard
-    name: A2A Agent Card (provider-hosted)
-    url: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
-  - type: Overlay
-    url: overlays/hiveagentiq-com-hivebank-overlay.yaml
-  - type: Authentication
-    url: authentication/hiveagentiq-com-authentication.yml
-  - type: SourceCode
-    url: https://github.com/srotzin/hivebank
-- aid: hiveagentiq-com:hivelaw-legal-compliance-api
-  name: HiveLaw AI Legal Contracts & Compliance API
-  description: >-
-    Legal and compliance layer on hivelaw.hiveagentiq.com: contract drafting, AI review and on-chain sealing ($0.50
-    each) and three compliance-tier programmes ($500, $1,500, $2,500) in the served 6-operation OpenAPI 3.0.3, with
-    disputes, appeals, jurisdiction data (free GET /v1/jurisdictions), a 555-case precedent corpus, EU AI Act
-    hallucination audits, compliance stamps and a Bronze/Silver/Gold Seal of Compliance ($100-$1,000/year) listed in
-    /.well-known/hivelaw.json and priced in /.well-known/hive-payments.json. Four MCP-shaped tools are published over
-    REST (GET /v1/mcp/tools, POST /v1/mcp/call); POST /mcp is a real 404, so no MCP client can connect. Unknown paths
-    return a genuine 404 that doubles as the endpoint catalogue.
-  humanURL: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
-  baseURL: https://hivelaw.hiveagentiq.com
-  tags:
-  - Compliance
-  - Legal
-  - Agents
-  - x402
-  properties:
-  - type: OpenAPI
-    url: openapi/hiveagentiq-com-hivelaw-openapi.json
-  - type: OpenAPI
-    name: Provider-hosted OpenAPI 3.0.3
-    url: https://hivelaw.hiveagentiq.com/openapi.json
-  - type: APIReference
-    name: Service discovery document
-    url: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
-  - type: AgentCard
-    url: a2a/hiveagentiq-com-a2a.yml
-  - type: AgentCard
-    name: A2A Agent Card (provider-hosted)
-    url: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
-  - type: Overlay
-    url: overlays/hiveagentiq-com-hivelaw-overlay.yaml
+    url: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
   - type: Authentication
     url: authentication/hiveagentiq-com-authentication.yml
   - type: ErrorCatalog
     url: errors/hiveagentiq-com-problem-types.yml
   - type: RateLimits
     url: rate-limits/hiveagentiq-com-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/hiveagentiq-com-webhooks.yml
+  - type: DataModel
+    url: data-model/hiveagentiq-com-data-model.yml
+  - type: SourceCode
+    url: https://github.com/srotzin/hivetrust
+  - type: Documentation
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: APIReference
+    url: https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+  - type: GettingStarted
+    url: https://thehiveryiq.com/onboard.html
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivegate-llms.txt
+  - type: LLMsTxt
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivegate.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivegate
+  - type: Documentation
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivebank-llms.txt
+  - type: LLMsTxt
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivebank
+  - type: APIReference
+    url: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
+  - type: AgentCard
+    url: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
+- aid: hiveagentiq-com:hiveagentiq-com-credential-api
+  name: Hive Agent IQ Credential API
+  description: The Credential API from Hive Agent IQ — 3 operation(s) for credential.
+  humanURL: https://github.com/srotzin/hivetrust#api-reference
+  baseURL: https://hivetrust.hiveagentiq.com
+  tags:
+  - Credential
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-credential-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/srotzin/hivetrust#api-reference
+  - type: APIReference
+    url: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivetrust-llms.txt
+  - type: LLMsTxt
+    url: https://hivetrust.hiveagentiq.com/llms.txt
+  - type: ToolCrosswalk
+    url: mcp/hiveagentiq-com-tool-crosswalk.yml
+  - type: AgentCard
+    url: a2a/hiveagentiq-com-a2a.yml
+  - type: AgentCard
+    url: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
+  - type: Authentication
+    url: authentication/hiveagentiq-com-authentication.yml
+  - type: ErrorCatalog
+    url: errors/hiveagentiq-com-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/hiveagentiq-com-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/hiveagentiq-com-webhooks.yml
+  - type: DataModel
+    url: data-model/hiveagentiq-com-data-model.yml
+  - type: SourceCode
+    url: https://github.com/srotzin/hivetrust
+  - type: Documentation
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: APIReference
+    url: https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+  - type: GettingStarted
+    url: https://thehiveryiq.com/onboard.html
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivegate-llms.txt
+  - type: LLMsTxt
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivegate.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivegate
+  - type: Documentation
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivebank-llms.txt
+  - type: LLMsTxt
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivebank
+  - type: APIReference
+    url: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
+  - type: AgentCard
+    url: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
+- aid: hiveagentiq-com:hiveagentiq-com-gate-api
+  name: Hive Agent IQ Gate API
+  description: The Gate API from Hive Agent IQ — 5 operation(s) for gate.
+  humanURL: https://github.com/srotzin/hivetrust#api-reference
+  baseURL: https://hivetrust.hiveagentiq.com
+  tags:
+  - Gate
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-gate-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/srotzin/hivetrust#api-reference
+  - type: APIReference
+    url: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivetrust-llms.txt
+  - type: LLMsTxt
+    url: https://hivetrust.hiveagentiq.com/llms.txt
+  - type: ToolCrosswalk
+    url: mcp/hiveagentiq-com-tool-crosswalk.yml
+  - type: AgentCard
+    url: a2a/hiveagentiq-com-a2a.yml
+  - type: AgentCard
+    url: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
+  - type: Authentication
+    url: authentication/hiveagentiq-com-authentication.yml
+  - type: ErrorCatalog
+    url: errors/hiveagentiq-com-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/hiveagentiq-com-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/hiveagentiq-com-webhooks.yml
+  - type: DataModel
+    url: data-model/hiveagentiq-com-data-model.yml
+  - type: SourceCode
+    url: https://github.com/srotzin/hivetrust
+  - type: Documentation
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: APIReference
+    url: https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+  - type: GettingStarted
+    url: https://thehiveryiq.com/onboard.html
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivegate-llms.txt
+  - type: LLMsTxt
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivegate.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivegate
+  - type: Documentation
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivebank-llms.txt
+  - type: LLMsTxt
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivebank
+  - type: APIReference
+    url: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
+  - type: AgentCard
+    url: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
+- aid: hiveagentiq-com:hiveagentiq-com-identity-api
+  name: Hive Agent IQ Identity API
+  description: The Identity API from Hive Agent IQ — 1 operation(s) for identity.
+  humanURL: https://github.com/srotzin/hivetrust#api-reference
+  baseURL: https://hivetrust.hiveagentiq.com
+  tags:
+  - Identity
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-identity-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/srotzin/hivetrust#api-reference
+  - type: APIReference
+    url: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivetrust-llms.txt
+  - type: LLMsTxt
+    url: https://hivetrust.hiveagentiq.com/llms.txt
+  - type: ToolCrosswalk
+    url: mcp/hiveagentiq-com-tool-crosswalk.yml
+  - type: AgentCard
+    url: a2a/hiveagentiq-com-a2a.yml
+  - type: AgentCard
+    url: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
+  - type: Authentication
+    url: authentication/hiveagentiq-com-authentication.yml
+  - type: ErrorCatalog
+    url: errors/hiveagentiq-com-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/hiveagentiq-com-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/hiveagentiq-com-webhooks.yml
+  - type: DataModel
+    url: data-model/hiveagentiq-com-data-model.yml
+  - type: SourceCode
+    url: https://github.com/srotzin/hivetrust
+  - type: Documentation
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: APIReference
+    url: https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+  - type: GettingStarted
+    url: https://thehiveryiq.com/onboard.html
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivegate-llms.txt
+  - type: LLMsTxt
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivegate.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivegate
+  - type: Documentation
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivebank-llms.txt
+  - type: LLMsTxt
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivebank
+  - type: APIReference
+    url: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
+  - type: AgentCard
+    url: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
+- aid: hiveagentiq-com:hiveagentiq-com-law-api
+  name: Hive Agent IQ Law API
+  description: The Law API from Hive Agent IQ — 3 operation(s) for law.
+  humanURL: https://github.com/srotzin/hivetrust#api-reference
+  baseURL: https://hivetrust.hiveagentiq.com
+  tags:
+  - Law
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-law-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/srotzin/hivetrust#api-reference
+  - type: APIReference
+    url: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivetrust-llms.txt
+  - type: LLMsTxt
+    url: https://hivetrust.hiveagentiq.com/llms.txt
+  - type: ToolCrosswalk
+    url: mcp/hiveagentiq-com-tool-crosswalk.yml
+  - type: AgentCard
+    url: a2a/hiveagentiq-com-a2a.yml
+  - type: AgentCard
+    url: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
+  - type: Authentication
+    url: authentication/hiveagentiq-com-authentication.yml
+  - type: ErrorCatalog
+    url: errors/hiveagentiq-com-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/hiveagentiq-com-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/hiveagentiq-com-webhooks.yml
+  - type: DataModel
+    url: data-model/hiveagentiq-com-data-model.yml
+  - type: SourceCode
+    url: https://github.com/srotzin/hivetrust
+  - type: Documentation
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: APIReference
+    url: https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+  - type: GettingStarted
+    url: https://thehiveryiq.com/onboard.html
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivegate-llms.txt
+  - type: LLMsTxt
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivegate.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivegate
+  - type: Documentation
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivebank-llms.txt
+  - type: LLMsTxt
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivebank
+  - type: APIReference
+    url: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
+  - type: AgentCard
+    url: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
+- aid: hiveagentiq-com:hiveagentiq-com-trust-api
+  name: Hive Agent IQ Trust API
+  description: The Trust API from Hive Agent IQ — 4 operation(s) for trust.
+  humanURL: https://github.com/srotzin/hivetrust#api-reference
+  baseURL: https://hivetrust.hiveagentiq.com
+  tags:
+  - Trust
+  properties:
+  - type: OpenAPI
+    url: openapi/hiveagentiq-com-trust-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/srotzin/hivetrust#api-reference
+  - type: APIReference
+    url: https://hivetrust.hiveagentiq.com/.well-known/hivetrust.json
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivetrust-llms.txt
+  - type: LLMsTxt
+    url: https://hivetrust.hiveagentiq.com/llms.txt
+  - type: ToolCrosswalk
+    url: mcp/hiveagentiq-com-tool-crosswalk.yml
+  - type: AgentCard
+    url: a2a/hiveagentiq-com-a2a.yml
+  - type: AgentCard
+    url: https://hivetrust.hiveagentiq.com/.well-known/agent-card.json
+  - type: Authentication
+    url: authentication/hiveagentiq-com-authentication.yml
+  - type: ErrorCatalog
+    url: errors/hiveagentiq-com-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/hiveagentiq-com-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/hiveagentiq-com-webhooks.yml
+  - type: DataModel
+    url: data-model/hiveagentiq-com-data-model.yml
+  - type: SourceCode
+    url: https://github.com/srotzin/hivetrust
+  - type: Documentation
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: APIReference
+    url: https://hivegate.hiveagentiq.com/.well-known/hivegate.json
+  - type: GettingStarted
+    url: https://thehiveryiq.com/onboard.html
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivegate-llms.txt
+  - type: LLMsTxt
+    url: https://hivegate.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivegate.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivegate
+  - type: Documentation
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: LLMsTxt
+    url: llms/hiveagentiq-com-hivebank-llms.txt
+  - type: LLMsTxt
+    url: https://hivebank.hiveagentiq.com/llms.txt
+  - type: AgentCard
+    url: https://hivebank.hiveagentiq.com/.well-known/agent-card.json
+  - type: SourceCode
+    url: https://github.com/srotzin/hivebank
+  - type: APIReference
+    url: https://hivelaw.hiveagentiq.com/.well-known/hivelaw.json
+  - type: AgentCard
+    url: https://hivelaw.hiveagentiq.com/.well-known/agent-card.json
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: MCPServer
+  url: https://hivetrust.hiveagentiq.com/mcp
+- type: MCPServer
+  url: https://hivegate.hiveagentiq.com/mcp
+- type: Overlay
+  url: overlays/hiveagentiq-com-hivegate-overlay.yaml
+- type: MCPServer
+  url: https://hivebank.hiveagentiq.com/mcp
+- type: Overlay
+  url: overlays/hiveagentiq-com-hivebank-overlay.yaml
+- type: Overlay
+  url: overlays/hiveagentiq-com-hivelaw-overlay.yaml
 - type: AgenticAccess
   url: agentic-access/hiveagentiq-com-agentic-access.yml
 - type: Website
@@ -333,3 +599,11 @@ x-enrichment:
   status: enriched
   artifacts_added: 59
   pass: local-v3
+x-parent: thehiveryiq-com
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://hivetrust.hiveagentiq.com/.well-known/agent-card.json"
+  grade: "near-conformant"
+  protocol_version: "0.3.0"
+  control: 200
