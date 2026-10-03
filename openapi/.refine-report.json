@@ -1,10 +1,10 @@
 {
   "provider": "hiveagentiq-com",
   "sources": [
-    "hiveagentiq-com-hivebank-openapi.json",
-    "hiveagentiq-com-hivegate-openapi.json",
-    "hiveagentiq-com-hivelaw-openapi.json",
-    "hiveagentiq-com-hivetrust-openapi.json"
+    "_original/hiveagentiq-com-hivebank-openapi.json",
+    "_original/hiveagentiq-com-hivegate-openapi.json",
+    "_original/hiveagentiq-com-hivelaw-openapi.json",
+    "_original/hiveagentiq-com-hivetrust-openapi.json"
   ],
   "outputs": [
     "hiveagentiq-com-bank-api-openapi.yml",
@@ -15,15 +15,11 @@
     "hiveagentiq-com-identity-api-openapi.yml",
     "hiveagentiq-com-trust-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/hiveagentiq-com-hivebank-openapi.json",
-    "archived openapi/hiveagentiq-com-hivegate-openapi.json",
-    "archived openapi/hiveagentiq-com-hivelaw-openapi.json",
-    "archived openapi/hiveagentiq-com-hivetrust-openapi.json"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (4 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "hiveagentiq-com-hivebank-openapi.json: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
     "hiveagentiq-com-hivebank-openapi.json: tagged paths POST /v1/bank/custody/attest -> Bank",
     "hiveagentiq-com-hivebank-openapi.json: tagged paths POST /v1/bank/custody/policy -> Bank",
@@ -59,7 +55,15 @@
     "hiveagentiq-com-hivetrust-openapi.json: declared missing tag: Credential",
     "hiveagentiq-com-hivetrust-openapi.json: declared missing tag: Identity",
     "hiveagentiq-com-hivetrust-openapi.json: declared missing tag: Trust",
-    "apis.yml register: written (+7 apis, 7 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "hiveagentiq-com-bank-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hiveagentiq-com-comply-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hiveagentiq-com-credential-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hiveagentiq-com-gate-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hiveagentiq-com-identity-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hiveagentiq-com-law-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hiveagentiq-com-trust-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
