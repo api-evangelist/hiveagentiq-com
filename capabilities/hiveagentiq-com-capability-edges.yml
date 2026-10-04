@@ -1,0 +1,56 @@
+slug: hiveagentiq-com
+provider: Hive Agent IQ
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 4
+edges:
+- tag: Law
+  spec_file: hiveagentiq-com-law-api-openapi.yml
+  capability_id: BC-150.10
+  capability_id_l1: BC-150
+  capability_name: Contract Management
+  confidence: 0.85
+  evidence: POST /v1/law/contract/draft  Draft legal contract; POST /v1/law/contract/review  AI contract
+    review; POST /v1/law/contract/seal  Seal contract on-chain
+  reason: Operations cover drafting, reviewing and executing (sealing) legal contracts — the contract
+    lifecycle. Maps cleanly to Legal Management / Contract Management.
+- tag: Credential
+  spec_file: hiveagentiq-com-credential-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.82
+  evidence: POST /v1/credential/issue  HiveCredential — issue scoped credential; POST /v1/credential/verify  verify
+    credential and scope; mutate scope (narrow/freeze/unfreeze/revoke)
+  reason: Issuance, verification, scoping and revocation of DID-based identity credentials is identity
+    and access management.
+- tag: Bank
+  spec_file: hiveagentiq-com-bank-api-openapi.yml
+  capability_id: BC-210
+  capability_id_l1: BC-210
+  capability_name: Treasury Management
+  confidence: 0.7
+  evidence: POST /v1/bank/custody/policy  postV1BankCustodyPolicy  Treasury policy attestation; POST /v1/bank/draw/credit  Credit
+    line draw
+  reason: Custody attestation, treasury policy and instant/scheduled/credit draws of USDC are treasury
+    cash and funding operations; spans cash and debt sub-capabilities so no single L2 is asserted.
+- tag: Trust
+  spec_file: hiveagentiq-com-trust-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /v1/trust/did/generate  DID issuance; POST /v1/trust/vc/issue  VC issuance; GET /v1/trust/score/{did}  Trust
+    score lookup
+  reason: Despite the 'Trust' tag, the operations issue decentralised identifiers and verifiable credentials
+    and resolve reputation proofs — credential issuance and identity verification, i.e. Identity & Access
+    Management. Not financial-crime or enterprise-risk trust scoring.

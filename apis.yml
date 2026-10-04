@@ -523,6 +523,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/hiveagentiq-com-capability-edges.yml
+  name: Hive Agent IQ Business Capability Map
 - type: MCPServer
   url: https://hivetrust.hiveagentiq.com/mcp
 - type: MCPServer
