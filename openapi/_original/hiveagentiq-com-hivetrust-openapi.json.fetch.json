@@ -1,0 +1,12 @@
+{
+ "url": "https://hivetrust.hiveagentiq.com/openapi.json",
+ "requested_url": "https://hivetrust.hiveagentiq.com/openapi.json",
+ "status": 200,
+ "content_type": "application/json; charset=utf-8",
+ "bytes": 3675,
+ "sha256": "1e3832d1c8d174541cf28413492c42aab66fc9230851be02a1bdee7a30e079eb",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
