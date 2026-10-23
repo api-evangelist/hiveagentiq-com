@@ -114,3 +114,9 @@ x-mpp:
   - onboard
   - stream-e
   treasury: '0x15184Bf50B3d3F52b60434f8942b7D52F2eB436E'
+x-provenance:
+  method: harvested
+  publisher: Hive Agent IQ
+  source: https://hivegate.hiveagentiq.com/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
