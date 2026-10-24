@@ -30,6 +30,9 @@ artifacts:
   authentication/hiveagentiq-com-authentication.yml:
     method: searched
     evidence: declared in the artifact
+  capabilities/hiveagentiq-com-capability-edges.yml:
+    method: unknown
+    evidence: no authorship recorded
   conformance/hiveagentiq-com-conformance.yml:
     method: searched
     evidence: declared in the artifact
@@ -45,7 +48,13 @@ artifacts:
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-09-24T161608.yml:
+  integrations/_index.yml:
+    method: generated
+    evidence: carries an API Evangelist house phrase
+  integrations/hiveagentiq-com-integration-edges.yml:
+    method: searched
+    evidence: declared in the artifact
+  kin/checks-2026-10-11T110117.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-19T193153.yml:
@@ -78,6 +87,21 @@ artifacts:
   kin/score-2026-09-24T161608.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T210408.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T232841.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T000835.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T024842.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-11T110117.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/hiveagentiq-com-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
@@ -108,30 +132,55 @@ artifacts:
   mcp/hiveagentiq-com-tool-crosswalk.yml:
     method: derived
     evidence: declared in the artifact
-  openapi/hiveagentiq-com-hivebank-openapi.json:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/hiveagentiq-com-hivegate-openapi.json:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/hiveagentiq-com-hivelaw-openapi.json:
-    method: unknown
-    evidence: no authorship recorded
-  openapi/hiveagentiq-com-hivetrust-openapi.json:
-    method: unknown
-    evidence: no authorship recorded
+  openapi/_original/hiveagentiq-com-hivebank-openapi.json:
+    method: harvested
+    evidence: byte-identical to https://hivebank.hiveagentiq.com/openapi.json (sha256 659cdc93bb1c, fetched
+      2026-10-04)
+  openapi/_original/hiveagentiq-com-hivegate-openapi.json:
+    method: harvested
+    evidence: byte-identical to https://hivegate.hiveagentiq.com/openapi.json (sha256 49fe50c58058, fetched
+      2026-10-04)
+  openapi/_original/hiveagentiq-com-hivelaw-openapi.json:
+    method: harvested
+    evidence: found in openapi/_original/; the fetch URL and bytes were not recorded, so byte-identity
+      to the provider's source is unverified
+  openapi/_original/hiveagentiq-com-hivetrust-openapi.json:
+    method: harvested
+    evidence: byte-identical to https://hivetrust.hiveagentiq.com/openapi.json (sha256 1e3832d1c8d1, fetched
+      2026-10-04)
+  openapi/hiveagentiq-com-bank-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/hiveagentiq-com-comply-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/hiveagentiq-com-credential-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/hiveagentiq-com-gate-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/hiveagentiq-com-identity-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/hiveagentiq-com-law-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/hiveagentiq-com-trust-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   overlays/hiveagentiq-com-hivebank-overlay.yaml:
-    method: generated
-    evidence: declared in the artifact
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   overlays/hiveagentiq-com-hivegate-overlay.yaml:
-    method: generated
-    evidence: declared in the artifact
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   overlays/hiveagentiq-com-hivelaw-overlay.yaml:
-    method: generated
-    evidence: declared in the artifact
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   overlays/hiveagentiq-com-hivetrust-overlay.yaml:
-    method: generated
-    evidence: declared in the artifact
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   packages/hiveagentiq-com-packages.yml:
     method: searched
     evidence: declared in the artifact
