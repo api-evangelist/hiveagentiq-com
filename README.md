@@ -64,11 +64,142 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Hive Agent IQ (hiveagentiq.com) is the agent-platform brand of Hive Civilization (sibling brand thehiveryiq.com, profiled in `all/thehiveryiq-com`). It runs a federation of agent-facing services on its own subdomains — HiveTrust (KYA identity, DIDs, verifiable credentials, trust scoring), HiveGate (onboarding and framework bridging), HiveBank (treasury) and HiveLaw (contracts and compliance) — each with an OpenAPI 3.0.3 stub, an A2A 0.3.0 agent card, an ai-plugin.json manifest and, on three of the four, a remote MCP server; calls are metered in USDC through x402 on Base.
+Hive Agent IQ (hiveagentiq.com) is the agent-platform brand of Hive Civilization — a single-founder Wyoming company (Stephen Rotzin) whose sibling brand thehiveryiq.com is profiled separately — running a federation of agent-facing microservices on its own subdomains for autonomous AI agents: HiveTrust (KYA identity, W3C DIDs and verifiable credentials, 0-1000 behavioural trust scoring, USDC performance bonds, data-oracle context leases, insurance and disputes), HiveGate (free first-DID onboarding, adapters for LangChain, CrewAI, AutoGen, OpenAI, Anthropic and A2A agents, trust bridging), HiveBank (treasury attestation, USDC vaults and payment streams) and HiveLaw (contract drafting, dispute arbitration, EU AI Act hallucination audits and compliance seals). Each service publishes an OpenAPI 3.0.3 document, an A2A 0.3.0 agent card, an ai-plugin.json manifest and, on three of the four, a remote MCP server whose tools/list answers anonymously; every metered operation is priced in USDC and settled per call through x402 (or the MPP rail) on Base, with responses Ed25519-signed by the service DID. The apex website hiveagentiq.com, its legal pages and the HiveForge host returned Cloudflare Error 1000 ("DNS points to prohibited IP", HTTP 403) for every path throughout the 2026-09-19 profiling pass.
 
-- Website: https://hiveagentiq.com/ (returned Cloudflare Error 1000 for every path on 2026-09-19)
-- HiveTrust: https://hivetrust.hiveagentiq.com — OpenAPI, MCP (17 tools), agent card, DID configuration
-- HiveGate: https://hivegate.hiveagentiq.com — OpenAPI, MCP (4 tools), agent card, live A2A JSON-RPC responder
-- HiveBank: https://hivebank.hiveagentiq.com — OpenAPI, MCP (5 tools), agent card
-- HiveLaw: https://hivelaw.hiveagentiq.com — OpenAPI, agent card, REST-listed tools
-- Source: https://github.com/srotzin
+**Areas:** Agents · Agentic Commerce · A2A · MCP · x402 · Decentralized Identity · Verifiable Credentials · Trust Scoring · Stablecoins · Insurance · Compliance · Agent-Native
+
+## Hive Agent IQ on APIs.io
+
+Everything profiled for Hive Agent IQ is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/hiveagentiq-com/](https://apis.io/providers/hiveagentiq-com/)** — or go straight to one of the APIs or properties below.
+
+### APIs (7)
+
+- [Hive Agent IQ Bank API](https://apis.io/apis/hiveagentiq-com/hiveagentiq-com-bank-api/) — The Bank API from Hive Agent IQ — 5 operation(s) for bank.
+- [Hive Agent IQ Comply API](https://apis.io/apis/hiveagentiq-com/hiveagentiq-com-comply-api/) — The Comply API from Hive Agent IQ — 3 operation(s) for comply.
+- [Hive Agent IQ Credential API](https://apis.io/apis/hiveagentiq-com/hiveagentiq-com-credential-api/) — The Credential API from Hive Agent IQ — 3 operation(s) for credential.
+- [Hive Agent IQ Gate API](https://apis.io/apis/hiveagentiq-com/hiveagentiq-com-gate-api/) — The Gate API from Hive Agent IQ — 5 operation(s) for gate.
+- [Hive Agent IQ Identity API](https://apis.io/apis/hiveagentiq-com/hiveagentiq-com-identity-api/) — The Identity API from Hive Agent IQ — 1 operation(s) for identity.
+- [Hive Agent IQ Law API](https://apis.io/apis/hiveagentiq-com/hiveagentiq-com-law-api/) — The Law API from Hive Agent IQ — 3 operation(s) for law.
+- [Hive Agent IQ Trust API](https://apis.io/apis/hiveagentiq-com/hiveagentiq-com-trust-api/) — The Trust API from Hive Agent IQ — 4 operation(s) for trust.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Hiveagentiq Com Webhooks](https://apis.io/asyncapis/hiveagentiq-com/hiveagentiq-com-webhooks/)
+
+#### MCP servers (6)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Moved to /providers/hiveagentiq-com/](https://apis.io/servers/hiveagentiq-com/hiveagentiq-com-mcp-yml/)
+- [Moved to /providers/hiveagentiq-com/](https://apis.io/servers/hiveagentiq-com/hivebank-mcp-endpoint-streamable-http-5-tools/)
+- [Moved to /providers/hiveagentiq-com/](https://apis.io/servers/hiveagentiq-com/hivegate-mcp-endpoint-streamable-http-4-tools/)
+- [mcp](https://apis.io/servers/hiveagentiq-com/mcp/)
+- [mcp](https://apis.io/servers/hiveagentiq-com/mcp-2/)
+- [mcp](https://apis.io/servers/hiveagentiq-com/mcp-3/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Hiveagentiq Com Agentic Access](https://apis.io/agentic-access/hiveagentiq-com/hiveagentiq-com-agentic-access/)
+
+#### Overlays (4)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Hiveagentiq Com Hivebank Overlay](https://apis.io/overlays/hiveagentiq-com/hiveagentiq-com-hivebank-overlay/)
+- [Hiveagentiq Com Hivegate Overlay](https://apis.io/overlays/hiveagentiq-com/hiveagentiq-com-hivegate-overlay/)
+- [Hiveagentiq Com Hivelaw Overlay](https://apis.io/overlays/hiveagentiq-com/hiveagentiq-com-hivelaw-overlay/)
+- [Hiveagentiq Com Hivetrust Overlay](https://apis.io/overlays/hiveagentiq-com/hiveagentiq-com-hivetrust-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Hiveagentiq Com Authentication](https://apis.io/security/hiveagentiq-com/hiveagentiq-com-authentication/)
+- [Hiveagentiq Com Domain Security](https://apis.io/security/hiveagentiq-com/hiveagentiq-com-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Hiveagentiq Com Plans Pricing](https://apis.io/plans/hiveagentiq-com/hiveagentiq-com-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Hiveagentiq Com Rate Limits](https://apis.io/rate-limits/hiveagentiq-com/hiveagentiq-com-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://hiveagentiq.com/)
+- [Getting started](https://thehiveryiq.com/onboard.html)
+- [Pricing](https://hivetrust.hiveagentiq.com/.well-known/hive-payments.json)
+- [Sign up](https://thehiveryiq.com/onboard/)
+- [Terms of service](https://thehiveryiq.com/terms)
+- [Privacy policy](https://thehiveryiq.com/privacy)
+- [GitHub](https://github.com/srotzin)
+
+## API Evangelist rating
+
+**Kin Score 54.2** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 76.7 |
+| Contract quality | 53.4 |
+| Contract governance | 18.2 |
+| Operational transparency | 44.7 |
+| Developer ergonomics | 49.4 |
+| Access clarity | 76.3 |
+
+**Agent readiness 36.9** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | yes |
+| Consent Identity | — |
+| Agent Card | near-conformant (partial credit) |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 21.9** — Insurance
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/hiveagentiq-com/](https://apis.io/providers/hiveagentiq-com/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Hive Agent IQ: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/hiveagentiq-com/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
